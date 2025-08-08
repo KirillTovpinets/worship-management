@@ -48,11 +48,51 @@ model User {
   image         String?
   password      String?
   role          UserRole  @default(SINGER)
+  key           SongKey?  // Performer's preferred key
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
+}
+
+model Song {
+  id             String    @id @default(cuid())
+  title          String
+  tone           SongKey
+  bpm            Int
+  originalSinger String
+  author         String
+  pace           SongPace
+  style          String
+  tags           String
+  nature         String
+  lyrics         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  events         EventSong[]
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  date        DateTime
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  songs       EventSong[]
+}
+
+model EventSong {
+  id        String   @id @default(cuid())
+  eventId   String
+  songId    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, songId])
 }
 
 model VerificationToken {
@@ -66,4 +106,25 @@ model VerificationToken {
 enum UserRole {
   ADMIN
   SINGER
+}
+
+enum SongKey {
+  C
+  C_SHARP
+  D
+  D_SHARP
+  E
+  F
+  F_SHARP
+  G
+  G_SHARP
+  A
+  A_SHARP
+  B
+}
+
+enum SongPace {
+  SLOW
+  MODERATE
+  FAST
 }

@@ -1,10 +1,11 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Song } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import SingerDashboardClient from "./SingerDashboardClient";
+import SongsClient from "./SongsClient";
 
-interface SingerDashboardProps {
+interface SongsPageProps {
   searchParams: {
     page?: string;
     limit?: string;
@@ -15,13 +16,12 @@ interface SingerDashboardProps {
     tags?: string | string[];
     natures?: string | string[];
     hasEvents?: string;
-    mySongs?: string;
   };
 }
 
-export default async function SingerDashboard({
+export default async function SongsPage({
   searchParams: params,
-}: SingerDashboardProps) {
+}: SongsPageProps) {
   const searchParams = await params;
   const session = await getServerSession(authOptions);
 
@@ -29,8 +29,8 @@ export default async function SingerDashboard({
     redirect("/auth/signin");
   }
 
-  if (session.user?.role === "ADMIN") {
-    redirect("/admin");
+  if (session.user?.role !== "ADMIN") {
+    redirect("/dashboard");
   }
 
   // Parse search parameters
@@ -65,9 +65,6 @@ export default async function SingerDashboard({
   const hasEvents = searchParams.hasEvents
     ? searchParams.hasEvents === "true"
     : undefined;
-  const mySongs = searchParams.mySongs
-    ? searchParams.mySongs === "true"
-    : undefined;
 
   // Calculate pagination
   const skip = (page - 1) * limit;
@@ -79,7 +76,6 @@ export default async function SingerDashboard({
   if (search) {
     where.title = {
       contains: search,
-      mode: "insensitive",
     };
   }
 
@@ -109,7 +105,6 @@ export default async function SingerDashboard({
     where.OR = tags.map((tag) => ({
       tags: {
         contains: tag,
-        mode: "insensitive",
       },
     }));
   }
@@ -119,7 +114,6 @@ export default async function SingerDashboard({
     where.OR = natures.map((nature) => ({
       nature: {
         contains: nature,
-        mode: "insensitive",
       },
     }));
   }
@@ -135,11 +129,6 @@ export default async function SingerDashboard({
         none: {}, // Songs that have no events
       };
     }
-  }
-
-  // Filter by my songs (singer's preferred key)
-  if (mySongs && session.user?.key) {
-    where.tone = session.user.key;
   }
 
   // Get total count for pagination
@@ -183,15 +172,7 @@ export default async function SingerDashboard({
 
   // Create a map of songs with matching users and events
   const songsWithMatchingUsers = songs.map((song) => {
-    const matchingUsers = allUsers
-      .filter((user) => user.key === song.tone && user.name)
-      .map((user) => ({
-        id: user.id,
-        name: user.name!,
-        email: user.email,
-        key: user.key || "",
-        role: user.role,
-      }));
+    const matchingUsers = allUsers.filter((user) => user.key === song.tone);
     return {
       ...song,
       matchingUsers,
@@ -258,24 +239,22 @@ export default async function SingerDashboard({
     natures: uniqueNatures,
   };
 
-  const currentFilters = {
-    search,
-    tones,
-    paces,
-    styles,
-    tags,
-    natures,
-    hasEvents,
-    mySongs,
-  };
-
   return (
-    <SingerDashboardClient
-      session={session}
-      songs={songsWithMatchingUsers}
+    <SongsClient
+      songs={
+        songsWithMatchingUsers as unknown as (Song & { matchingUsers: any[] })[]
+      }
       pagination={pagination}
       filters={filters}
-      currentFilters={currentFilters}
+      currentFilters={{
+        search,
+        tones,
+        paces,
+        styles,
+        tags,
+        natures,
+        hasEvents,
+      }}
     />
   );
 }
