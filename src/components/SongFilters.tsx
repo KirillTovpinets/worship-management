@@ -60,6 +60,7 @@ export default function SongFilters({
     selectedTags,
     selectedNatures,
     hasEvents,
+    onFiltersChange,
   ]);
 
   const handleToneToggle = (tone: string) => {

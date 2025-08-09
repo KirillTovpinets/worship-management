@@ -64,6 +64,7 @@ export default function SingerSongFilters({
     selectedNatures,
     hasEvents,
     mySongs,
+    onFiltersChange,
   ]);
 
   const handleToneToggle = (tone: string) => {

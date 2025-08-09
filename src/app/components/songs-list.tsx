@@ -1,8 +1,10 @@
+"use client";
+
 import Pagination from "@/components/Pagination";
 import { getKeyLabel, getPaceLabel } from "@/lib/songs";
-import { Song, SongKey, SongPace } from "@prisma/client";
+import type { Song, SongKey, SongPace } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface FilterOptions {
   search: string;
@@ -92,6 +94,13 @@ export default function SongsList({
       setLoading(false);
     }
   };
+
+  // Load on mount and when filters change
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+    void fetchSongs(1, currentFilters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(currentFilters)]);
 
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({ ...prev, page }));

@@ -1,7 +1,7 @@
 "use client";
 
 import Pagination from "@/components/Pagination";
-import SongFilters from "@/components/SongFilters";
+import SingerSongFilters from "@/components/SingerSongFilters";
 import { getKeyLabel, getPaceLabel } from "@/lib/songs";
 import { SongKey, SongPace } from "@prisma/client";
 import { Session } from "next-auth";
@@ -228,7 +228,7 @@ export default function SingerDashboardClient({
           </div>
 
           {/* Filters */}
-          <SongFilters
+          <SingerSongFilters
             filters={filters}
             onFiltersChange={handleFiltersChange}
           />
@@ -564,7 +564,7 @@ export default function SingerDashboardClient({
                         No events scheduled
                       </h3>
                       <p className="mt-1 text-sm text-gray-500">
-                        This song hasn't been scheduled for any events yet.
+                        This song hasn&apos;t been scheduled for any events yet.
                       </p>
                     </div>
                   )}

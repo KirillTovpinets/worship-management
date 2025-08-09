@@ -70,6 +70,7 @@ export default async function SongsPage({
   const skip = (page - 1) * limit;
 
   // Build where clause
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
   // Search by title
@@ -242,6 +243,7 @@ export default async function SongsPage({
   return (
     <SongsClient
       songs={
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         songsWithMatchingUsers as unknown as (Song & { matchingUsers: any[] })[]
       }
       pagination={pagination}

@@ -1170,7 +1170,7 @@ export default function SongsClient({
                         No events scheduled
                       </h3>
                       <p className="mt-1 text-sm text-gray-500">
-                        This song hasn't been scheduled for any events yet.
+                        This song hasn&apos;t been scheduled for any events yet.
                       </p>
                     </div>
                   )}
