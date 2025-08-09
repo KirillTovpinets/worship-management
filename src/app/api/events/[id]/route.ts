@@ -5,8 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -19,7 +20,7 @@ export async function GET(
 
   try {
     const event = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         songs: {
           include: {
@@ -48,8 +49,9 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -65,7 +67,7 @@ export async function PUT(
 
     // Check if event exists
     const existingEvent = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingEvent) {
@@ -74,7 +76,7 @@ export async function PUT(
 
     // Update event
     const updatedEvent = await prisma.event.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title: title || existingEvent.title,
         description:
@@ -87,13 +89,13 @@ export async function PUT(
     if (songIds !== undefined) {
       // Remove existing songs
       await prisma.eventSong.deleteMany({
-        where: { eventId: params.id },
+        where: { eventId: id },
       });
 
       // Add new songs
       if (songIds.length > 0) {
         const eventSongs = songIds.map((songId: string, index: number) => ({
-          eventId: params.id,
+          eventId: id,
           songId,
           order: index,
         }));
@@ -106,7 +108,7 @@ export async function PUT(
 
     // Return the updated event with songs
     const eventWithSongs = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         songs: {
           include: {
@@ -131,8 +133,9 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -146,7 +149,7 @@ export async function DELETE(
   try {
     // Check if event exists
     const existingEvent = await prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingEvent) {
@@ -155,7 +158,7 @@ export async function DELETE(
 
     // Delete event (EventSong records will be deleted automatically due to cascade)
     await prisma.event.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Event deleted successfully" });

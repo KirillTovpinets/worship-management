@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 import ScheduleClient from "./ScheduleClient";
 
 interface SchedulePageProps {
-  searchParams: {
+  searchParams: Promise<{
     year?: string;
     month?: string;
-  };
+  }>;
 }
 
 export default async function SchedulePage({

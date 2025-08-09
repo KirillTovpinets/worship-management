@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import SongsClient from "./SongsClient";
 
 interface SongsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     limit?: string;
     search?: string;
@@ -16,7 +16,7 @@ interface SongsPageProps {
     tags?: string | string[];
     natures?: string | string[];
     hasEvents?: string;
-  };
+  }>;
 }
 
 export default async function SongsPage({

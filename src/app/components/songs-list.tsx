@@ -41,15 +41,10 @@ export default function SongsList({
 }: {
   currentFilters: FilterOptions;
 }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [songs, setSongs] = useState<Song[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [editingSong, setEditingSong] = useState<Song | null>(null);
 
   // Pagination state
   const [pagination, setPagination] = useState<PaginationData>({
@@ -116,7 +111,6 @@ export default function SongsList({
       });
 
       if (response.ok) {
-        setSuccess("Song deleted successfully");
         fetchSongs(pagination.page, currentFilters);
       } else {
         const data = await response.json();
@@ -128,7 +122,6 @@ export default function SongsList({
   };
 
   const openEditModal = (song: Song) => {
-    setEditingSong(song);
     setFormData({
       title: song.title,
       tone: song.tone,
@@ -140,13 +133,11 @@ export default function SongsList({
       tags: song.tags,
       nature: song.nature,
     });
-    setShowEditModal(true);
   };
-  const [showEditModal, setShowEditModal] = useState(false);
 
-  const [formData, setFormData] = useState<SongFormData>({
+  const [, setFormData] = useState<SongFormData>({
     title: "",
-    tone: "C",
+    tone: "C" as SongKey,
     bpm: "",
     originalSinger: "",
     author: "",
@@ -154,7 +145,7 @@ export default function SongsList({
     style: "",
     tags: "",
     nature: "",
-  });
+  } as SongFormData);
 
   if (status === "loading" || loading) {
     return (

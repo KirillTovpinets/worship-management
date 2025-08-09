@@ -6,9 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - Get specific song
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -16,7 +17,7 @@ export async function GET(
     }
 
     const song = await prisma.song.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         events: {
           include: {
@@ -48,9 +49,10 @@ export async function GET(
 // PUT - Update song
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session || session.user?.role !== "ADMIN") {
@@ -72,7 +74,7 @@ export async function PUT(
 
     // Check if song exists
     const existingSong = await prisma.song.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingSong) {
@@ -95,7 +97,7 @@ export async function PUT(
 
     // Update song
     const updatedSong = await prisma.song.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
 
@@ -115,9 +117,10 @@ export async function PUT(
 // DELETE - Delete song
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session || session.user?.role !== "ADMIN") {
@@ -126,7 +129,7 @@ export async function DELETE(
 
     // Check if song exists
     const existingSong = await prisma.song.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingSong) {
@@ -135,7 +138,7 @@ export async function DELETE(
 
     // Delete song
     await prisma.song.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

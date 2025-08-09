@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import SingerDashboardClient from "./SingerDashboardClient";
 
 interface SingerDashboardProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     limit?: string;
     search?: string;
@@ -16,7 +16,7 @@ interface SingerDashboardProps {
     natures?: string | string[];
     hasEvents?: string;
     mySongs?: string;
-  };
+  }>;
 }
 
 export default async function SingerDashboard({
