@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Ensure form inputs always have proper styling regardless of color scheme */
+input,
+textarea,
+select {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Ensure modal content is always visible */
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
