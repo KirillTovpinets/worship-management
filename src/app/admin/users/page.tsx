@@ -67,7 +67,7 @@ export default function UserManagement() {
       } else {
         setError("Failed to fetch users");
       }
-    } catch (error) {
+    } catch {
       setError("Error fetching users");
     } finally {
       setLoading(false);
@@ -104,7 +104,7 @@ export default function UserManagement() {
       } else {
         setError(data.error || "Failed to create user");
       }
-    } catch (error) {
+    } catch {
       setError("Error creating user");
     }
   };
@@ -142,7 +142,7 @@ export default function UserManagement() {
       } else {
         setError(data.error || "Failed to update user");
       }
-    } catch (error) {
+    } catch {
       setError("Error updating user");
     }
   };
@@ -162,7 +162,7 @@ export default function UserManagement() {
         const data = await response.json();
         setError(data.error || "Failed to delete user");
       }
-    } catch (error) {
+    } catch {
       setError("Error deleting user");
     }
   };

@@ -26,7 +26,7 @@ interface Song {
   id: string;
   title: string;
   tone: SongKey;
-  bpm: number;
+  bpm: string;
   originalSinger: string;
   author: string;
   pace: SongPace;
@@ -113,6 +113,7 @@ export default function SongsClient({
   );
   const [editingSong, setEditingSong] = useState<Song | null>(null);
   const [importFile, setImportFile] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [importResults, setImportResults] = useState<any>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [formData, setFormData] = useState({
@@ -231,7 +232,7 @@ export default function SongsClient({
       } else {
         setError(data.error || "Failed to create song");
       }
-    } catch (error) {
+    } catch {
       setError("Error creating song");
     }
   };
@@ -275,7 +276,7 @@ export default function SongsClient({
       } else {
         setError(data.error || "Failed to update song");
       }
-    } catch (error) {
+    } catch {
       setError("Error updating song");
     }
   };
@@ -296,7 +297,7 @@ export default function SongsClient({
         const data = await response.json();
         setError(data.error || "Failed to delete song");
       }
-    } catch (error) {
+    } catch {
       setError("Error deleting song");
     }
   };
@@ -306,7 +307,7 @@ export default function SongsClient({
     setFormData({
       title: song.title,
       tone: song.tone,
-      bpm: song.bpm.toString(),
+      bpm: song.bpm,
       originalSinger: song.originalSinger,
       author: song.author,
       pace: song.pace,
@@ -339,7 +340,7 @@ export default function SongsClient({
       } else {
         setError("Failed to download template");
       }
-    } catch (error) {
+    } catch {
       setError("Error downloading template");
     }
   };
@@ -384,7 +385,7 @@ export default function SongsClient({
           setImportResults({ expectedColumns: data.expectedColumns });
         }
       }
-    } catch (error) {
+    } catch {
       setError("Error importing songs");
     } finally {
       setIsImporting(false);

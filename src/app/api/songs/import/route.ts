@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     // Get headers (first row)
     const headers = jsonData[0] as string[];
-    const dataRows = jsonData.slice(1) as any[][];
+    const dataRows = jsonData.slice(1) as unknown[][];
 
     // Expected columns mapping
     const expectedColumns = {
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Map headers to expected columns
-    const columnMap: { [key: string]: number } = {};
+    const columnMap: Record<string, number> = {};
 
     headers.forEach((header, index) => {
       const normalizedHeader = header.toLowerCase().trim();
@@ -177,16 +177,18 @@ export async function POST(request: NextRequest) {
 
       try {
         // Extract data from row
-        const title = row[columnMap.title]?.toString().trim();
-        const tone = row[columnMap.tone]?.toString().trim();
-        const bpm = row[columnMap.bpm];
-        const originalSinger = row[columnMap.originalSinger]?.toString().trim();
-        const author = row[columnMap.author]?.toString().trim();
-        const pace = row[columnMap.pace]?.toString().trim();
-        const style = row[columnMap.style]?.toString().trim();
-        const tags = row[columnMap.tags]?.toString().trim();
-        const nature = row[columnMap.nature]?.toString().trim();
-        const lyrics = row[columnMap.lyrics]?.toString().trim();
+        const title = row[columnMap.title!]?.toString().trim();
+        const tone = row[columnMap.tone!]?.toString().trim();
+        const bpm = row[columnMap.bpm!];
+        const originalSinger = row[columnMap.originalSinger!]
+          ?.toString()
+          .trim();
+        const author = row[columnMap.author!]?.toString().trim();
+        const pace = row[columnMap.pace!]?.toString().trim();
+        const style = row[columnMap.style!]?.toString().trim();
+        const tags = row[columnMap.tags!]?.toString().trim();
+        const nature = row[columnMap.nature!]?.toString().trim();
+        const lyrics = row[columnMap.lyrics!]?.toString().trim();
 
         // Validate required fields
         if (!title) {

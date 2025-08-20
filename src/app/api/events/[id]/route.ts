@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
@@ -42,14 +42,14 @@ export async function GET(
     console.error("Error fetching event:", error);
     return NextResponse.json(
       { error: "Failed to fetch event" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
@@ -75,7 +75,7 @@ export async function PUT(
     }
 
     // Update event
-    const updatedEvent = await prisma.event.update({
+    await prisma.event.update({
       where: { id },
       data: {
         title: title || existingEvent.title,
@@ -126,14 +126,14 @@ export async function PUT(
     console.error("Error updating event:", error);
     return NextResponse.json(
       { error: "Failed to update event" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
@@ -166,7 +166,7 @@ export async function DELETE(
     console.error("Error deleting event:", error);
     return NextResponse.json(
       { error: "Failed to delete event" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

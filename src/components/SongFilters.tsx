@@ -74,7 +74,16 @@ export default function SongFilters({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [
+    search,
+    selectedTones,
+    selectedPaces,
+    selectedStyles,
+    selectedTags,
+    selectedNatures,
+    hasEvents,
+    onFiltersChange,
+  ]);
 
   // Trigger filter change when checkboxes/selects change (immediate)
   useEffect(() => {
@@ -88,12 +97,14 @@ export default function SongFilters({
       hasEvents,
     });
   }, [
+    search,
     selectedTones,
     selectedPaces,
     selectedStyles,
     selectedTags,
     selectedNatures,
     hasEvents,
+    onFiltersChange,
   ]);
 
   const handleToneToggle = (tone: string) => {

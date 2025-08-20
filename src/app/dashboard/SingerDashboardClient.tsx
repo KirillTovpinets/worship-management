@@ -27,7 +27,7 @@ interface Song {
   id: string;
   title: string;
   tone: SongKey;
-  bpm: number;
+  bpm: string;
   originalSinger: string;
   author: string;
   pace: SongPace;
@@ -109,7 +109,7 @@ export default function SingerDashboardClient({
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [viewingLyrics, setViewingLyrics] = useState<string>("");
   const [viewingSongHistory, setViewingSongHistory] = useState<Song | null>(
-    null
+    null,
   );
 
   const updateSearchParams = useCallback(
@@ -148,7 +148,7 @@ export default function SingerDashboardClient({
 
       router.push(`/dashboard?${params.toString()}`);
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   const handlePageChange = (page: number) => {
@@ -161,7 +161,7 @@ export default function SingerDashboardClient({
     (newFilters: typeof currentFilters) => {
       updateSearchParams(newFilters);
     },
-    [updateSearchParams]
+    [updateSearchParams],
   );
 
   const openHistoryModal = (song: Song) => {
@@ -473,7 +473,7 @@ export default function SingerDashboardClient({
                           <span className="bg-gray-200 px-3 py-1 rounded-full text-gray-800">
                             {
                               viewingSongHistory.events.filter((e) =>
-                                isPastEvent(e.event.date)
+                                isPastEvent(e.event.date),
                               ).length
                             }
                           </span>
@@ -485,7 +485,7 @@ export default function SingerDashboardClient({
                           <span className="bg-blue-200 px-3 py-1 rounded-full text-blue-800">
                             {
                               viewingSongHistory.events.filter(
-                                (e) => !isPastEvent(e.event.date)
+                                (e) => !isPastEvent(e.event.date),
                               ).length
                             }
                           </span>

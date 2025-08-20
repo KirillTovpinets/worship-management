@@ -43,7 +43,6 @@ export default function SongsList({
 }) {
   const { status } = useSession();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [songs, setSongs] = useState<Song[]>([]);
 
   // Pagination state
@@ -81,10 +80,10 @@ export default function SongsList({
         setSongs(data.songs);
         setPagination(data.pagination);
       } else {
-        setError("Failed to fetch songs");
+        console.error("Failed to fetch songs");
       }
-    } catch (error) {
-      setError("Error fetching songs");
+    } catch {
+      console.error("Error fetching songs");
     } finally {
       setLoading(false);
     }
@@ -114,10 +113,10 @@ export default function SongsList({
         fetchSongs(pagination.page, currentFilters);
       } else {
         const data = await response.json();
-        setError(data.error || "Failed to delete song");
+        console.error(data.error || "Failed to delete song");
       }
-    } catch (error) {
-      setError("Error deleting song");
+    } catch {
+      console.error("Error deleting song");
     }
   };
 
@@ -125,7 +124,7 @@ export default function SongsList({
     setFormData({
       title: song.title,
       tone: song.tone,
-      bpm: song.bpm.toString(),
+      bpm: song.bpm,
       originalSinger: song.originalSinger,
       author: song.author,
       pace: song.pace,
