@@ -228,7 +228,7 @@ export default async function SingerDashboard({
 
   allSongs.forEach((song) => {
     if (song.tags) {
-      song.tags.split(",").forEach((tag) => {
+              song.tags.split("/").forEach((tag) => {
         allTags.add(tag.trim());
       });
     }

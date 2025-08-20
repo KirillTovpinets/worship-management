@@ -47,7 +47,7 @@ export default function ScheduleClient({
   const uniqueTags = Array.from(
     new Set(
       songs
-        .flatMap((song) => song.tags.split(",").map((tag) => tag.trim()))
+        .flatMap((song) => song.tags.split("/").map((tag) => tag.trim()))
         .filter((tag) => tag.length > 0)
     )
   ).sort();

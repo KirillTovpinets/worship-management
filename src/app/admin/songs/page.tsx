@@ -209,7 +209,7 @@ export default async function SongsPage({
 
   allSongs.forEach((song) => {
     if (song.tags) {
-      song.tags.split(",").forEach((tag) => {
+              song.tags.split("/").forEach((tag) => {
         allTags.add(tag.trim());
       });
     }

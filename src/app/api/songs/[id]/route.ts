@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - Get specific song
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -41,7 +41,7 @@ export async function GET(
     console.error("Error fetching song:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -49,7 +49,7 @@ export async function GET(
 // PUT - Update song
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -86,7 +86,7 @@ export async function PUT(
     const updateData: any = {};
     if (title) updateData.title = title;
     if (tone) updateData.tone = tone;
-    if (bpm) updateData.bpm = parseInt(bpm);
+    if (bpm) updateData.bpm = bpm;
     if (originalSinger) updateData.originalSinger = originalSinger;
     if (author) updateData.author = author;
     if (pace) updateData.pace = pace;
@@ -109,7 +109,7 @@ export async function PUT(
     console.error("Error updating song:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -117,7 +117,7 @@ export async function PUT(
 // DELETE - Delete song
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -148,7 +148,7 @@ export async function DELETE(
     console.error("Error deleting song:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

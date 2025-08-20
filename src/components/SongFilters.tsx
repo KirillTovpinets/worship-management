@@ -13,6 +13,15 @@ interface FilterOptions {
 
 interface SongFiltersProps {
   filters: FilterOptions;
+  currentFilters: {
+    search: string;
+    tones: string[];
+    paces: string[];
+    styles: string[];
+    tags: string[];
+    natures: string[];
+    hasEvents?: boolean;
+  };
   onFiltersChange: (filters: {
     search: string;
     tones: string[];
@@ -26,18 +35,31 @@ interface SongFiltersProps {
 
 export default function SongFilters({
   filters,
+  currentFilters,
   onFiltersChange,
 }: SongFiltersProps) {
-  const [search, setSearch] = useState("");
-  const [selectedTones, setSelectedTones] = useState<string[]>([]);
-  const [selectedPaces, setSelectedPaces] = useState<string[]>([]);
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedNatures, setSelectedNatures] = useState<string[]>([]);
-  const [hasEvents, setHasEvents] = useState<boolean | undefined>(undefined);
+  const [search, setSearch] = useState(currentFilters.search);
+  const [selectedTones, setSelectedTones] = useState<string[]>(
+    currentFilters.tones,
+  );
+  const [selectedPaces, setSelectedPaces] = useState<string[]>(
+    currentFilters.paces,
+  );
+  const [selectedStyles, setSelectedStyles] = useState<string[]>(
+    currentFilters.styles,
+  );
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    currentFilters.tags,
+  );
+  const [selectedNatures, setSelectedNatures] = useState<string[]>(
+    currentFilters.natures,
+  );
+  const [hasEvents, setHasEvents] = useState<boolean | undefined>(
+    currentFilters.hasEvents,
+  );
   const [showFilters, setShowFilters] = useState(false);
 
-  // Debounced search effect
+  // Debounced search effect for search input only
   useEffect(() => {
     const timer = setTimeout(() => {
       onFiltersChange({
@@ -52,38 +74,49 @@ export default function SongFilters({
     }, 300);
 
     return () => clearTimeout(timer);
+  }, [search]);
+
+  // Trigger filter change when checkboxes/selects change (immediate)
+  useEffect(() => {
+    onFiltersChange({
+      search,
+      tones: selectedTones,
+      paces: selectedPaces,
+      styles: selectedStyles,
+      tags: selectedTags,
+      natures: selectedNatures,
+      hasEvents,
+    });
   }, [
-    search,
     selectedTones,
     selectedPaces,
     selectedStyles,
     selectedTags,
     selectedNatures,
     hasEvents,
-    onFiltersChange,
   ]);
 
   const handleToneToggle = (tone: string) => {
     setSelectedTones((prev) =>
-      prev.includes(tone) ? prev.filter((t) => t !== tone) : [...prev, tone]
+      prev.includes(tone) ? prev.filter((t) => t !== tone) : [...prev, tone],
     );
   };
 
   const handlePaceToggle = (pace: string) => {
     setSelectedPaces((prev) =>
-      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace]
+      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace],
     );
   };
 
   const handleStyleToggle = (style: string) => {
     setSelectedStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
     );
   };
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
@@ -91,7 +124,7 @@ export default function SongFilters({
     setSelectedNatures((prev) =>
       prev.includes(nature)
         ? prev.filter((n) => n !== nature)
-        : [...prev, nature]
+        : [...prev, nature],
     );
   };
 

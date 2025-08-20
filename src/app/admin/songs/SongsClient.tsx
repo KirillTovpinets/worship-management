@@ -106,11 +106,15 @@ export default function SongsClient({
   const [showEditModal, setShowEditModal] = useState(false);
   const [showLyricsModal, setShowLyricsModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [viewingLyrics, setViewingLyrics] = useState<string>("");
   const [viewingSongHistory, setViewingSongHistory] = useState<Song | null>(
-    null
+    null,
   );
   const [editingSong, setEditingSong] = useState<Song | null>(null);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importResults, setImportResults] = useState<any>(null);
+  const [isImporting, setIsImporting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     tone: "C" as SongKey,
@@ -157,20 +161,38 @@ export default function SongsClient({
 
       router.push(`/admin/songs?${params.toString()}`);
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", page.toString());
-    router.push(`/admin/songs?${params.toString()}`);
+    const url = `/admin/songs?${params.toString()}`;
+    router.push(url, { scroll: false });
   };
 
   const handleFiltersChange = useCallback(
     (newFilters: typeof currentFilters) => {
-      updateSearchParams(newFilters);
+      // Only update if filters actually changed
+      const hasChanged =
+        newFilters.search !== currentFilters.search ||
+        JSON.stringify(newFilters.tones) !==
+          JSON.stringify(currentFilters.tones) ||
+        JSON.stringify(newFilters.paces) !==
+          JSON.stringify(currentFilters.paces) ||
+        JSON.stringify(newFilters.styles) !==
+          JSON.stringify(currentFilters.styles) ||
+        JSON.stringify(newFilters.tags) !==
+          JSON.stringify(currentFilters.tags) ||
+        JSON.stringify(newFilters.natures) !==
+          JSON.stringify(currentFilters.natures) ||
+        newFilters.hasEvents !== currentFilters.hasEvents;
+
+      if (hasChanged) {
+        updateSearchParams(newFilters);
+      }
     },
-    [updateSearchParams]
+    [updateSearchParams, currentFilters],
   );
 
   const handleCreateSong = async (e: React.FormEvent) => {
@@ -205,7 +227,7 @@ export default function SongsClient({
           lyrics: "",
         });
         // Refresh the page to show new data
-        router.refresh();
+        router.push(`/admin/songs?${searchParams.toString()}`);
       } else {
         setError(data.error || "Failed to create song");
       }
@@ -249,7 +271,7 @@ export default function SongsClient({
           lyrics: "",
         });
         // Refresh the page to show updated data
-        router.refresh();
+        router.push(`/admin/songs?${searchParams.toString()}`);
       } else {
         setError(data.error || "Failed to update song");
       }
@@ -269,7 +291,7 @@ export default function SongsClient({
       if (response.ok) {
         setSuccess("Song deleted successfully");
         // Refresh the page to show updated data
-        router.refresh();
+        router.push(`/admin/songs?${searchParams.toString()}`);
       } else {
         const data = await response.json();
         setError(data.error || "Failed to delete song");
@@ -301,13 +323,84 @@ export default function SongsClient({
     setShowHistoryModal(true);
   };
 
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await fetch("/api/songs/import/template");
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "songs-import-template.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        setError("Failed to download template");
+      }
+    } catch (error) {
+      setError("Error downloading template");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImportFile(file);
+      setImportResults(null);
+    }
+  };
+
+  const handleImportSongs = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importFile) return;
+
+    setIsImporting(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", importFile);
+
+      const response = await fetch("/api/songs/import", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setImportResults(data.results);
+        setSuccess(data.message);
+        if (data.results.success > 0) {
+          // Refresh the page to show new data
+          router.push(`/admin/songs?${searchParams.toString()}`);
+        }
+      } else {
+        setError(data.error || "Failed to import songs");
+        if (data.expectedColumns) {
+          setImportResults({ expectedColumns: data.expectedColumns });
+        }
+      }
+    } catch (error) {
+      setError("Error importing songs");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const closeModals = () => {
     setShowCreateModal(false);
     setShowEditModal(false);
     setShowLyricsModal(false);
     setShowHistoryModal(false);
+    setShowImportModal(false);
     setEditingSong(null);
     setViewingSongHistory(null);
+    setImportFile(null);
+    setImportResults(null);
     setFormData({
       title: "",
       tone: "C",
@@ -365,12 +458,20 @@ export default function SongsClient({
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Songs</h2>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-            >
-              Add New Song
-            </button>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Import from Excel
+              </button>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Add New Song
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -388,6 +489,7 @@ export default function SongsClient({
           {/* Filters */}
           <SongFilters
             filters={filters}
+            currentFilters={currentFilters}
             onFiltersChange={handleFiltersChange}
           />
 
@@ -530,7 +632,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -546,7 +648,7 @@ export default function SongsClient({
                           tone: e.target.value as SongKey,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {SONG_KEYS.map((keyOption) => (
                         <option key={keyOption.value} value={keyOption.value}>
@@ -560,15 +662,13 @@ export default function SongsClient({
                       BPM *
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       required
-                      min="1"
-                      max="300"
                       value={formData.bpm}
                       onChange={(e) =>
                         setFormData({ ...formData, bpm: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -585,7 +685,7 @@ export default function SongsClient({
                           originalSinger: e.target.value,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -599,7 +699,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, author: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -615,7 +715,7 @@ export default function SongsClient({
                           pace: e.target.value as SongPace,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {SONG_PACES.map((paceOption) => (
                         <option key={paceOption.value} value={paceOption.value}>
@@ -635,7 +735,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, style: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -650,7 +750,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, tags: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -665,7 +765,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, nature: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -688,7 +788,7 @@ export default function SongsClient({
                               reader.readAsText(file);
                             }
                           }}
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 text-black"
                         />
                       </div>
                       <div>
@@ -699,7 +799,7 @@ export default function SongsClient({
                           }
                           placeholder="Paste lyrics here or upload a TXT file above..."
                           rows={8}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
                         />
                       </div>
                     </div>
@@ -747,7 +847,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -763,7 +863,7 @@ export default function SongsClient({
                           tone: e.target.value as SongKey,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {SONG_KEYS.map((keyOption) => (
                         <option key={keyOption.value} value={keyOption.value}>
@@ -785,7 +885,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, bpm: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -802,7 +902,7 @@ export default function SongsClient({
                           originalSinger: e.target.value,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -816,7 +916,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, author: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -832,7 +932,7 @@ export default function SongsClient({
                           pace: e.target.value as SongPace,
                         })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {SONG_PACES.map((paceOption) => (
                         <option key={paceOption.value} value={paceOption.value}>
@@ -852,7 +952,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, style: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -867,7 +967,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, tags: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
@@ -882,7 +982,7 @@ export default function SongsClient({
                       onChange={(e) =>
                         setFormData({ ...formData, nature: e.target.value })
                       }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -905,7 +1005,7 @@ export default function SongsClient({
                               reader.readAsText(file);
                             }
                           }}
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 text-black"
                         />
                       </div>
                       <div>
@@ -916,7 +1016,7 @@ export default function SongsClient({
                           }
                           placeholder="Paste lyrics here or upload a TXT file above..."
                           rows={8}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
                         />
                       </div>
                     </div>
@@ -1079,7 +1179,7 @@ export default function SongsClient({
                           <span className="bg-gray-200 px-3 py-1 rounded-full text-gray-800">
                             {
                               viewingSongHistory.events.filter((e) =>
-                                isPastEvent(e.event.date)
+                                isPastEvent(e.event.date),
                               ).length
                             }
                           </span>
@@ -1091,7 +1191,7 @@ export default function SongsClient({
                           <span className="bg-blue-200 px-3 py-1 rounded-full text-blue-800">
                             {
                               viewingSongHistory.events.filter(
-                                (e) => !isPastEvent(e.event.date)
+                                (e) => !isPastEvent(e.event.date),
                               ).length
                             }
                           </span>
@@ -1184,6 +1284,179 @@ export default function SongsClient({
                 >
                   Close
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Songs Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-6 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-medium text-gray-900">
+                  Import Songs from Excel
+                </h3>
+                <button
+                  onClick={() => setShowImportModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Instructions */}
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+                  <h4 className="font-medium text-blue-900 mb-2">
+                    Instructions:
+                  </h4>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>
+                      • Download the template below to see the required format
+                    </li>
+                    <li>
+                      • Fill in your song data following the template structure
+                    </li>
+                    <li>• Upload your Excel file (.xlsx, .xls) or CSV file</li>
+                    <li>• Songs with duplicate titles will be skipped</li>
+                    <li>• All required fields must be filled</li>
+                  </ul>
+                </div>
+
+                {/* Template Download */}
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={handleDownloadTemplate}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    Download Template
+                  </button>
+                  <span className="text-sm text-gray-600">
+                    Download a sample Excel template with the correct format
+                  </span>
+                </div>
+
+                {/* File Upload */}
+                <form onSubmit={handleImportSongs}>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Upload Excel File
+                      </label>
+                      <input
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        onChange={handleFileChange}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                      />
+                      {importFile && (
+                        <p className="mt-2 text-sm text-gray-600">
+                          Selected file: {importFile.name}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Expected Columns Info */}
+                    {importResults?.expectedColumns && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                        <h4 className="font-medium text-yellow-900 mb-2">
+                          Expected Columns:
+                        </h4>
+                        <div className="text-sm text-yellow-800">
+                          {Object.entries(importResults.expectedColumns).map(
+                            ([key, values]) => (
+                              <div key={key} className="mb-1">
+                                <span className="font-medium">{key}:</span>{" "}
+                                {Array.isArray(values)
+                                  ? values.join(", ")
+                                  : String(values)}
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Import Results */}
+                    {importResults && !importResults.expectedColumns && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Import Results:
+                        </h4>
+                        <div className="text-sm text-gray-700 space-y-1">
+                          <div>
+                            Total rows processed: {importResults.totalRows}
+                          </div>
+                          <div className="text-green-600">
+                            Successfully imported: {importResults.success}
+                          </div>
+                          <div className="text-yellow-600">
+                            Skipped (duplicates): {importResults.skipped}
+                          </div>
+                          {importResults.errors.length > 0 && (
+                            <div className="text-red-600">
+                              Errors: {importResults.errors.length}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Error Details */}
+                        {importResults.errors.length > 0 && (
+                          <div className="mt-3">
+                            <h5 className="font-medium text-red-900 mb-2">
+                              Error Details:
+                            </h5>
+                            <div className="max-h-40 overflow-y-auto bg-red-50 border border-red-200 rounded-md p-3">
+                              {importResults.errors.map(
+                                (error: string, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="text-sm text-red-800 mb-1"
+                                  >
+                                    {error}
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowImportModal(false)}
+                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={!importFile || isImporting}
+                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded-md text-sm font-medium"
+                      >
+                        {isImporting ? "Importing..." : "Import Songs"}
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

@@ -60,7 +60,7 @@ model Song {
   id             String    @id @default(cuid())
   title          String
   tone           SongKey
-  bpm            Int
+  bpm            String
   originalSinger String
   author         String
   pace           SongPace

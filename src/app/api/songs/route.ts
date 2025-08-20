@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
 
     allSongs.forEach((song) => {
       if (song.tags) {
-        song.tags.split(",").forEach((tag) => {
+        song.tags.split("/").forEach((tag) => {
           allTags.add(tag.trim());
         });
       }
@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching songs:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         tone,
-        bpm: parseInt(bpm),
+        bpm,
         originalSinger,
         author,
         pace,
@@ -221,13 +221,13 @@ export async function POST(request: NextRequest) {
         message: "Song created successfully",
         song,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating song:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
