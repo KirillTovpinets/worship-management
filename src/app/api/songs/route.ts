@@ -107,12 +107,26 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get songs with pagination
+    // Get songs with pagination and singer assignments
     let songs = await prisma.song.findMany({
       where,
       orderBy,
       skip,
       take: limit,
+      include: {
+        adaptations: {
+          include: {
+            singer: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     // Filter by matching singers if specified

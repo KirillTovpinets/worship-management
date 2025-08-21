@@ -1,6 +1,5 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Song } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import SongsClient from "./SongsClient";
@@ -15,7 +14,6 @@ interface SongsPageProps {
     styles?: string | string[];
     tags?: string | string[];
     natures?: string | string[];
-    matchingSingers?: string | string[];
     hasEvents?: string;
     sortBy?: string;
     sortOrder?: string;
@@ -64,11 +62,6 @@ export default async function SongsPage({
     ? searchParams.natures
     : searchParams.natures
     ? [searchParams.natures]
-    : [];
-  const matchingSingers = Array.isArray(searchParams.matchingSingers)
-    ? searchParams.matchingSingers
-    : searchParams.matchingSingers
-    ? [searchParams.matchingSingers]
     : [];
   const hasEvents = searchParams.hasEvents
     ? searchParams.hasEvents === "true"
@@ -129,13 +122,6 @@ export default async function SongsPage({
     }));
   }
 
-  // Filter by matching singers
-  if (matchingSingers.length > 0) {
-    where.originalSinger = {
-      in: matchingSingers,
-    };
-  }
-
   // Filter by events
   if (hasEvents !== undefined) {
     if (hasEvents) {
@@ -191,30 +177,20 @@ export default async function SongsPage({
           },
         },
       },
-    },
-  });
-
-  // Get all users for matching
-  const allUsers = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      key: true,
-      role: true,
-    },
-    where: {
-      role: "SINGER", // Only get singers
-    },
-  });
-
-  // Create a map of songs with matching users and events
-  const songsWithMatchingUsers = songs.map((song) => {
-    const matchingUsers = allUsers.filter((user) => user.key === song.tone);
-    return {
-      ...song,
-      matchingUsers,
-    };
+      adaptations: {
+        include: {
+          singer: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+            },
+          },
+        },
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any,
   });
 
   // Get unique values for filter options
@@ -260,17 +236,6 @@ export default async function SongsPage({
   const uniqueTags = Array.from(allTags).sort();
   const uniqueNatures = Array.from(allNatures).sort();
 
-  // Get unique matching singers from songs
-  const uniqueMatchingSingers = await prisma.song.findMany({
-    select: {
-      originalSinger: true,
-    },
-    distinct: ["originalSinger"],
-    orderBy: {
-      originalSinger: "asc",
-    },
-  });
-
   const pagination = {
     page,
     limit,
@@ -286,25 +251,15 @@ export default async function SongsPage({
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
     natures: uniqueNatures,
-    matchingSingers: uniqueMatchingSingers.map((singer) => ({
-      name: singer.originalSinger,
-      key: singer.originalSinger,
-    })),
   };
+
+  // Cast songs to the expected type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const processedSongs = songs as any;
 
   return (
     <SongsClient
-      songs={
-        songsWithMatchingUsers as unknown as (Song & {
-          matchingUsers: Array<{
-            id: string;
-            name: string;
-            email: string;
-            key: string;
-            role: string;
-          }>;
-        })[]
-      }
+      songs={processedSongs}
       pagination={pagination}
       filters={filters}
       currentFilters={{
@@ -314,10 +269,6 @@ export default async function SongsPage({
         styles,
         tags,
         natures,
-        matchingSingers: matchingSingers.map((singer) => ({
-          name: singer,
-          key: singer,
-        })),
         hasEvents,
         sortBy,
         sortOrder,

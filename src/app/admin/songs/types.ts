@@ -36,6 +36,20 @@ export interface Song {
     key: string;
     role: string;
   }>;
+  adaptations?: Array<{
+    id: string;
+    songId: string;
+    singerId: string;
+    key: SongKey;
+    createdAt: Date;
+    updatedAt: Date;
+    singer: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
+  }>;
 }
 
 export interface PaginationData {
@@ -53,10 +67,6 @@ export interface FilterOptions {
   styles: string[];
   tags: string[];
   natures: string[];
-  matchingSingers: {
-    name: string;
-    key: string;
-  }[];
 }
 
 export interface CurrentFilters {
@@ -66,10 +76,6 @@ export interface CurrentFilters {
   styles: string[];
   tags: string[];
   natures: string[];
-  matchingSingers: {
-    name: string;
-    key: string;
-  }[];
   hasEvents?: boolean;
   sortBy?: string;
   sortOrder?: "asc" | "desc";

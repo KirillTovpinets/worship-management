@@ -54,6 +54,7 @@ model User {
 
   accounts Account[]
   sessions Session[]
+  songAdaptations SongAdaptation[]
 }
 
 model Song {
@@ -71,6 +72,7 @@ model Song {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   events         EventSong[]
+  adaptations SongAdaptation[]
 }
 
 model Event {
@@ -93,6 +95,20 @@ model EventSong {
   song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, songId])
+}
+
+model SongAdaptation {
+  id        String   @id @default(cuid())
+  songId    String
+  singerId  String
+  key       SongKey
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  singer    User     @relation(fields: [singerId], references: [id], onDelete: Cascade)
+
+  @@unique([songId, singerId])
 }
 
 model VerificationToken {

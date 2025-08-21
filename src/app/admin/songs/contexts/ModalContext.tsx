@@ -10,11 +10,16 @@ interface ModalContextType {
   showLyricsModal: boolean;
   showHistoryModal: boolean;
   showImportModal: boolean;
+  showAdaptationsModal: boolean;
 
   // Modal data
   viewingLyrics: string;
   viewingSongHistory: Song | null;
   editingSong: Song | null;
+  viewingAdaptations: Song | null;
+
+  // Refresh callback
+  onDataRefresh?: () => void;
 
   // Modal actions
   openCreateModal: () => void;
@@ -22,12 +27,15 @@ interface ModalContextType {
   openLyricsModal: (lyrics: string) => void;
   openHistoryModal: (song: Song) => void;
   openImportModal: () => void;
+  openAdaptationsModal: (song: Song) => void;
   closeAllModals: () => void;
   closeCreateModal: () => void;
   closeEditModal: () => void;
   closeLyricsModal: () => void;
   closeHistoryModal: () => void;
   closeImportModal: () => void;
+  closeAdaptationsModal: () => void;
+  setDataRefreshCallback: (callback: () => void) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -50,13 +58,18 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
   const [showLyricsModal, setShowLyricsModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-
+  const [showAdaptationsModal, setShowAdaptationsModal] = useState(false);
   const [viewingLyrics, setViewingLyrics] = useState("");
   const [viewingSongHistory, setViewingSongHistory] = useState<Song | null>(
     null,
   );
   const [editingSong, setEditingSong] = useState<Song | null>(null);
-
+  const [viewingAdaptations, setViewingAdaptations] = useState<Song | null>(
+    null,
+  );
+  const [onDataRefresh, setOnDataRefresh] = useState<(() => void) | undefined>(
+    undefined,
+  );
   const openCreateModal = () => setShowCreateModal(true);
   const openEditModal = (song: Song) => {
     setEditingSong(song);
@@ -71,7 +84,10 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
     setShowHistoryModal(true);
   };
   const openImportModal = () => setShowImportModal(true);
-
+  const openAdaptationsModal = (song: Song) => {
+    setViewingAdaptations(song);
+    setShowAdaptationsModal(true);
+  };
   const closeCreateModal = () => setShowCreateModal(false);
   const closeEditModal = () => {
     setShowEditModal(false);
@@ -86,7 +102,13 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
     setViewingSongHistory(null);
   };
   const closeImportModal = () => setShowImportModal(false);
-
+  const closeAdaptationsModal = () => {
+    setShowAdaptationsModal(false);
+    setViewingAdaptations(null);
+  };
+  const setDataRefreshCallback = (callback: () => void) => {
+    setOnDataRefresh(() => callback);
+  };
   const closeAllModals = () => {
     setShowCreateModal(false);
     setShowEditModal(false);
@@ -104,20 +126,26 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
     showLyricsModal,
     showHistoryModal,
     showImportModal,
+    showAdaptationsModal,
     viewingLyrics,
     viewingSongHistory,
     editingSong,
+    viewingAdaptations,
+    onDataRefresh,
     openCreateModal,
     openEditModal,
     openLyricsModal,
     openHistoryModal,
     openImportModal,
+    openAdaptationsModal,
     closeAllModals,
     closeCreateModal,
     closeEditModal,
     closeLyricsModal,
     closeHistoryModal,
     closeImportModal,
+    closeAdaptationsModal,
+    setDataRefreshCallback,
   };
 
   return (

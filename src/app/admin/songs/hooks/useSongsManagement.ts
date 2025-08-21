@@ -21,7 +21,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       params.delete("styles");
       params.delete("tags");
       params.delete("natures");
-      params.delete("matchingSingers");
       params.delete("hasEvents");
       params.delete("page"); // Reset to page 1 when filters change
 
@@ -35,9 +34,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       newFilters.styles.forEach((style) => params.append("styles", style));
       newFilters.tags.forEach((tag) => params.append("tags", tag));
       newFilters.natures.forEach((nature) => params.append("natures", nature));
-      newFilters.matchingSingers.forEach((singer) =>
-        params.append("matchingSingers", singer.name),
-      );
 
       if (newFilters.hasEvents !== undefined) {
         params.set("hasEvents", newFilters.hasEvents.toString());
@@ -86,8 +82,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
           JSON.stringify(currentFilters.tags) ||
         JSON.stringify(newFilters.natures) !==
           JSON.stringify(currentFilters.natures) ||
-        JSON.stringify(newFilters.matchingSingers) !==
-          JSON.stringify(currentFilters.matchingSingers) ||
         newFilters.hasEvents !== currentFilters.hasEvents;
 
       if (hasChanged) {
@@ -205,6 +199,11 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
     setSuccess("");
   };
 
+  const refreshData = () => {
+    // Refresh the page to reload data
+    router.push(`/admin/songs?${searchParams.toString()}`);
+  };
+
   return {
     error,
     success,
@@ -216,5 +215,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
     handleCreateSong,
     handleUpdateSong,
     clearMessages,
+    refreshData,
   };
 };

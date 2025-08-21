@@ -20,6 +20,7 @@ interface SongsManagementContextType {
     formData: import("../types").SongFormData,
   ) => Promise<{ success: boolean; error?: string }>;
   clearMessages: () => void;
+  refreshData: () => void;
 }
 
 const SongsManagementContext = createContext<

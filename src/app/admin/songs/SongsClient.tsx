@@ -5,6 +5,8 @@ import SongFilters from "@/components/SongFilters";
 import { getKeyLabel } from "@/lib/songs";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import AdaptationsModal from "./components/AdaptationsModal";
 import { HistoryModal } from "./components/HistoryModal";
 import { ImportModal } from "./components/ImportModal";
 import { LyricsModal } from "./components/LyricsModal";
@@ -16,7 +18,7 @@ import {
 } from "./contexts/SongsManagementContext";
 import { CreateSongModal } from "./CreateSongModal";
 import { EditSongModal } from "./EditSongModal";
-import { SongsClientProps } from "./types";
+import { Song, SongsClientProps } from "./types";
 
 const SongsClientContent = ({
   songs,
@@ -26,7 +28,20 @@ const SongsClientContent = ({
 }: SongsClientProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { openCreateModal, openImportModal } = useModalContext();
+  const {
+    openCreateModal,
+    openImportModal,
+    openAdaptationsModal,
+    setDataRefreshCallback,
+  } = useModalContext();
+  const [availableSingers, setAvailableSingers] = useState<
+    Array<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    }>
+  >([]);
   const {
     error,
     success,
@@ -35,7 +50,34 @@ const SongsClientContent = ({
     handleFiltersChange,
     handleSort,
     handleDeleteSong,
+    refreshData,
   } = useSongsManagementContext();
+
+  const handleOpenAdaptations = (song: Song) => {
+    openAdaptationsModal(song);
+  };
+
+  // Fetch available singers
+  useEffect(() => {
+    const fetchSingers = async () => {
+      try {
+        const response = await fetch("/api/users/singers");
+        if (response.ok) {
+          const singers = await response.json();
+          setAvailableSingers(singers);
+        }
+      } catch (error) {
+        console.error("Failed to fetch singers:", error);
+      }
+    };
+
+    fetchSingers();
+  }, []);
+
+  // Register refresh callback
+  useEffect(() => {
+    setDataRefreshCallback(refreshData);
+  }, [setDataRefreshCallback, refreshData]);
 
   if (!session || session.user?.role !== "ADMIN") {
     return null;
@@ -118,6 +160,7 @@ const SongsClientContent = ({
             songs={songs}
             onDeleteSong={handleDeleteSong}
             onSort={handleSort}
+            onOpenAdaptations={handleOpenAdaptations}
           />
 
           {/* Pagination */}
@@ -138,6 +181,7 @@ const SongsClientContent = ({
       <LyricsModal />
       <HistoryModal />
       <ImportModal />
+      <AdaptationsModal availableSingers={availableSingers} />
     </div>
   );
 };

@@ -22,12 +22,14 @@ interface SongsTableProps {
   songs: Song[];
   onDeleteSong: (songId: string) => void;
   onSort: (sortKey: string) => void;
+  onOpenAdaptations: (song: Song) => void;
 }
 
 export const SongsTable = ({
   songs,
   onDeleteSong,
   onSort,
+  onOpenAdaptations,
 }: SongsTableProps) => {
   const { openEditModal, openLyricsModal, openHistoryModal } =
     useModalContext();
@@ -51,7 +53,7 @@ export const SongsTable = ({
             >
               Название
             </WSortableTh>
-            <WTh>Key</WTh>
+            <WTh>Тональности</WTh>
             <WSortableTh sortKey="bpm" currentSort={sortConfig} onSort={onSort}>
               BPM
             </WSortableTh>
@@ -72,7 +74,7 @@ export const SongsTable = ({
             </WSortableTh>
             <WTh>Стиль</WTh>
             <WTh>Теги</WTh>
-            <WTh>Совпадающие исполнители</WTh>
+
             <WTh>Действия</WTh>
           </WTr>
         </WThead>
@@ -84,35 +86,56 @@ export const SongsTable = ({
                   {song.title}
                 </div>
               </WTd>
-              <WTd>{getKeyLabel(song.tone)}</WTd>
+              <WTd>
+                {song.adaptations && song.adaptations.length > 0 ? (
+                  <div className="flex items-center space-x-2">
+                    <WBadgeGroup>
+                      {song.adaptations.slice(0, 2).map((adaptation) => (
+                        <WBadge key={adaptation.id} variant="success" size="sm">
+                          {adaptation.singer.name} (
+                          {getKeyLabel(adaptation.key)})
+                        </WBadge>
+                      ))}
+                    </WBadgeGroup>
+                    {song.adaptations.length > 2 && (
+                      <span className="text-xs text-gray-500">
+                        +{song.adaptations.length - 2} ещё
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-400 text-xs">Нет адаптаций</span>
+                )}
+              </WTd>
               <WTd>{song.bpm}</WTd>
               <WTd>{song.nature}</WTd>
               <WTd>{song.originalSinger}</WTd>
               <WTd>{song.author}</WTd>
               <WTd>{song.style}</WTd>
               <WTd>{song.tags}</WTd>
-              <WTd>
-                {song.matchingUsers && song.matchingUsers.length > 0 ? (
-                  <WBadgeGroup>
-                    {song.matchingUsers.slice(0, 3).map((user) => (
-                      <WBadge key={user.id} variant="success" size="sm">
-                        {user.name}
-                      </WBadge>
-                    ))}
-                    {song.matchingUsers.length > 3 && (
-                      <span className="text-xs text-gray-500">
-                        +{song.matchingUsers.length - 3} ещё
-                      </span>
-                    )}
-                  </WBadgeGroup>
-                ) : (
-                  <span className="text-gray-400 text-xs">
-                    Нет совпадающих исполнителей
-                  </span>
-                )}
-              </WTd>
+
               <WTd className="text-sm font-medium">
                 <div className="flex items-center space-x-2">
+                  <WIconButton
+                    variant="success"
+                    onClick={() => onOpenAdaptations(song)}
+                    title={`Адаптации (${song.adaptations?.length || 0})`}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  </WIconButton>
                   <WIconButton
                     variant="primary"
                     onClick={() => openLyricsModal(song.lyrics || "")}
