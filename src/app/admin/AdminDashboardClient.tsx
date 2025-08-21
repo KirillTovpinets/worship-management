@@ -76,7 +76,7 @@ export default function AdminDashboardClient({
               <span className="text-sm text-gray-700">
                 Добро пожаловать, {session.user?.name} ({session.user?.role})
                 {session.user?.key &&
-                  ` - Key: ${getKeyLabel(session.user.key)}`}
+                  ` - Тональность: ${getKeyLabel(session.user.key)}`}
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}

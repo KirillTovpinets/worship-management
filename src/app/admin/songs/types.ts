@@ -53,6 +53,10 @@ export interface FilterOptions {
   styles: string[];
   tags: string[];
   natures: string[];
+  matchingSingers: {
+    name: string;
+    key: string;
+  }[];
 }
 
 export interface CurrentFilters {
@@ -62,6 +66,10 @@ export interface CurrentFilters {
   styles: string[];
   tags: string[];
   natures: string[];
+  matchingSingers: {
+    name: string;
+    key: string;
+  }[];
   hasEvents?: boolean;
   sortBy?: string;
   sortOrder?: "asc" | "desc";

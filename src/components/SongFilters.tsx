@@ -9,6 +9,10 @@ interface FilterOptions {
   styles: string[];
   tags: string[];
   natures: string[];
+  matchingSingers: {
+    name: string;
+    key: string;
+  }[];
 }
 
 interface SongFiltersProps {
@@ -20,6 +24,10 @@ interface SongFiltersProps {
     styles: string[];
     tags: string[];
     natures: string[];
+    matchingSingers: {
+      name: string;
+      key: string;
+    }[];
     hasEvents?: boolean;
   };
   onFiltersChange: (filters: {
@@ -29,6 +37,10 @@ interface SongFiltersProps {
     styles: string[];
     tags: string[];
     natures: string[];
+    matchingSingers: {
+      name: string;
+      key: string;
+    }[];
     hasEvents?: boolean;
   }) => void;
 }
@@ -54,6 +66,12 @@ export default function SongFilters({
   const [selectedNatures, setSelectedNatures] = useState<string[]>(
     currentFilters.natures,
   );
+  const [selectedMatchingSingers, setSelectedMatchingSingers] = useState<
+    {
+      name: string;
+      key: string;
+    }[]
+  >(currentFilters.matchingSingers);
   const [hasEvents, setHasEvents] = useState<boolean | undefined>(
     currentFilters.hasEvents,
   );
@@ -69,6 +87,7 @@ export default function SongFilters({
         styles: selectedStyles,
         tags: selectedTags,
         natures: selectedNatures,
+        matchingSingers: selectedMatchingSingers,
         hasEvents,
       });
     }, 300);
@@ -81,6 +100,7 @@ export default function SongFilters({
     selectedStyles,
     selectedTags,
     selectedNatures,
+    selectedMatchingSingers,
     hasEvents,
     onFiltersChange,
   ]);
@@ -94,6 +114,7 @@ export default function SongFilters({
       styles: selectedStyles,
       tags: selectedTags,
       natures: selectedNatures,
+      matchingSingers: selectedMatchingSingers,
       hasEvents,
     });
   }, [
@@ -103,6 +124,7 @@ export default function SongFilters({
     selectedStyles,
     selectedTags,
     selectedNatures,
+    selectedMatchingSingers,
     hasEvents,
     onFiltersChange,
   ]);
@@ -139,6 +161,17 @@ export default function SongFilters({
     );
   };
 
+  const handleMatchingSingerToggle = (singer: {
+    name: string;
+    key: string;
+  }) => {
+    setSelectedMatchingSingers((prev) =>
+      prev.some((s) => s.key === singer.key)
+        ? prev.filter((s) => s.key !== singer.key)
+        : [...prev, singer],
+    );
+  };
+
   const clearAllFilters = () => {
     setSearch("");
     setSelectedTones([]);
@@ -146,6 +179,7 @@ export default function SongFilters({
     setSelectedStyles([]);
     setSelectedTags([]);
     setSelectedNatures([]);
+    setSelectedMatchingSingers([]);
     setHasEvents(undefined);
   };
 
@@ -156,6 +190,7 @@ export default function SongFilters({
     selectedStyles.length > 0 ||
     selectedTags.length > 0 ||
     selectedNatures.length > 0 ||
+    selectedMatchingSingers.length > 0 ||
     hasEvents !== undefined;
 
   return (
@@ -368,6 +403,33 @@ export default function SongFilters({
                       />
                       <span className="ml-2 text-sm text-gray-700">
                         {nature}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Matching Singer Filter */}
+            {filters.matchingSingers.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Совпадающие исполнители ({selectedMatchingSingers.length}{" "}
+                  выбрано)
+                </label>
+                <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                  {filters.matchingSingers.map((singer) => (
+                    <label key={singer.name} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedMatchingSingers.some(
+                          (s) => s.key === singer.key,
+                        )}
+                        onChange={() => handleMatchingSingerToggle(singer)}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        {singer.name}
                       </span>
                     </label>
                   ))}

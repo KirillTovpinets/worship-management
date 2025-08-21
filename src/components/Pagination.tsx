@@ -76,29 +76,29 @@ export default function Pagination({
           disabled={currentPage === 1}
           className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Previous
+          Назад
         </button>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Next
+          Вперёд
         </button>
       </div>
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div className="flex items-center space-x-4">
           <div>
             <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{startItem}</span> to{" "}
-              <span className="font-medium">{endItem}</span> of{" "}
-              <span className="font-medium">{totalCount}</span> results
+              Показано <span className="font-medium">{startItem}</span> до{" "}
+              <span className="font-medium">{endItem}</span> из{" "}
+              <span className="font-medium">{totalCount}</span> результатов
             </p>
           </div>
           {onPageSizeChange && (
             <div className="flex items-center space-x-2">
               <label htmlFor="page-size" className="text-sm text-gray-700">
-                Show:
+                Показать:
               </label>
               <select
                 id="page-size"
@@ -112,7 +112,7 @@ export default function Pagination({
                   </option>
                 ))}
               </select>
-              <span className="text-sm text-gray-700">per page</span>
+              <span className="text-sm text-gray-700">на странице</span>
             </div>
           )}
         </div>
@@ -127,7 +127,7 @@ export default function Pagination({
                 disabled={currentPage === 1}
                 className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="sr-only">Previous</span>
+                <span className="sr-only">Назад</span>
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@ export default function Pagination({
                 disabled={currentPage === totalPages}
                 className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="sr-only">Next</span>
+                <span className="sr-only">Вперёд</span>
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"

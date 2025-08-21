@@ -15,6 +15,7 @@ interface SongsPageProps {
     styles?: string | string[];
     tags?: string | string[];
     natures?: string | string[];
+    matchingSingers?: string | string[];
     hasEvents?: string;
     sortBy?: string;
     sortOrder?: string;
@@ -63,6 +64,11 @@ export default async function SongsPage({
     ? searchParams.natures
     : searchParams.natures
     ? [searchParams.natures]
+    : [];
+  const matchingSingers = Array.isArray(searchParams.matchingSingers)
+    ? searchParams.matchingSingers
+    : searchParams.matchingSingers
+    ? [searchParams.matchingSingers]
     : [];
   const hasEvents = searchParams.hasEvents
     ? searchParams.hasEvents === "true"
@@ -121,6 +127,13 @@ export default async function SongsPage({
         contains: nature,
       },
     }));
+  }
+
+  // Filter by matching singers
+  if (matchingSingers.length > 0) {
+    where.originalSinger = {
+      in: matchingSingers,
+    };
   }
 
   // Filter by events
@@ -247,6 +260,17 @@ export default async function SongsPage({
   const uniqueTags = Array.from(allTags).sort();
   const uniqueNatures = Array.from(allNatures).sort();
 
+  // Get unique matching singers from songs
+  const uniqueMatchingSingers = await prisma.song.findMany({
+    select: {
+      originalSinger: true,
+    },
+    distinct: ["originalSinger"],
+    orderBy: {
+      originalSinger: "asc",
+    },
+  });
+
   const pagination = {
     page,
     limit,
@@ -262,6 +286,10 @@ export default async function SongsPage({
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
     natures: uniqueNatures,
+    matchingSingers: uniqueMatchingSingers.map((singer) => ({
+      name: singer.originalSinger,
+      key: singer.originalSinger,
+    })),
   };
 
   return (
@@ -286,6 +314,10 @@ export default async function SongsPage({
         styles,
         tags,
         natures,
+        matchingSingers: matchingSingers.map((singer) => ({
+          name: singer,
+          key: singer,
+        })),
         hasEvents,
         sortBy,
         sortOrder,

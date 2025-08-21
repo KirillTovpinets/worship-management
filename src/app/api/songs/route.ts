@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     const styles = searchParams.getAll("styles");
     const tags = searchParams.getAll("tags");
     const natures = searchParams.getAll("natures");
+    const matchingSingers = searchParams.getAll("matchingSingers");
     const sortBy = searchParams.get("sortBy");
     const sortOrder =
       (searchParams.get("sortOrder") as "asc" | "desc") || "asc";
@@ -107,12 +108,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Get songs with pagination
-    const songs = await prisma.song.findMany({
+    let songs = await prisma.song.findMany({
       where,
       orderBy,
       skip,
       take: limit,
     });
+
+    // Filter by matching singers if specified
+    if (matchingSingers.length > 0) {
+      // Filter songs that match the specified singer names
+      songs = songs.filter((song) =>
+        matchingSingers.includes(song.originalSinger),
+      );
+    }
 
     // Get unique values for filter options
     const uniqueTones = await prisma.song.findMany({
@@ -157,6 +166,17 @@ export async function GET(request: NextRequest) {
     const uniqueTags = Array.from(allTags).sort();
     const uniqueNatures = Array.from(allNatures).sort();
 
+    // Get unique matching singers from songs
+    const uniqueMatchingSingers = await prisma.song.findMany({
+      select: {
+        originalSinger: true,
+      },
+      distinct: ["originalSinger"],
+      orderBy: {
+        originalSinger: "asc",
+      },
+    });
+
     return NextResponse.json({
       songs,
       pagination: {
@@ -173,6 +193,10 @@ export async function GET(request: NextRequest) {
         styles: uniqueStyles.map((s) => s.style),
         tags: uniqueTags,
         natures: uniqueNatures,
+        matchingSingers: uniqueMatchingSingers.map((s) => ({
+          name: s.originalSinger,
+          key: s.originalSinger,
+        })),
       },
     });
   } catch (error) {
