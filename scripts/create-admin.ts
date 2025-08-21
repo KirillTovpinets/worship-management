@@ -8,6 +8,7 @@ interface AdminUserData {
   email: string;
   password: string;
   role?: UserRole;
+  superuser?: boolean;
 }
 
 async function createAdminUser(userData?: Partial<AdminUserData>) {
@@ -18,6 +19,7 @@ async function createAdminUser(userData?: Partial<AdminUserData>) {
       email: "admin@worship.com",
       password: "admin123",
       role: "ADMIN",
+      superuser: true,
     };
 
     // Merge with provided data
@@ -47,6 +49,7 @@ async function createAdminUser(userData?: Partial<AdminUserData>) {
         email: finalData.email,
         password: hashedPassword,
         role: finalData.role,
+        superuser: finalData.superuser,
       },
     });
 

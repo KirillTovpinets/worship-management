@@ -50,6 +50,7 @@ model User {
   role          UserRole  @default(SINGER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  superuser     Boolean   @default(false)
 
   accounts Account[]
   sessions Session[]

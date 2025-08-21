@@ -46,7 +46,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role = "SINGER" } = await request.json();
+    const {
+      name,
+      email,
+      password,
+      role = "SINGER",
+      superuser,
+    } = await request.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -77,6 +83,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         role: role as "ADMIN" | "SINGER",
+        superuser,
       },
       select: {
         id: true,

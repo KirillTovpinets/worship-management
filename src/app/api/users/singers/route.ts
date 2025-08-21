@@ -12,6 +12,9 @@ export async function GET() {
     }
 
     const singers = await prisma.user.findMany({
+      where: {
+        superuser: false,
+      },
       select: {
         id: true,
         name: true,

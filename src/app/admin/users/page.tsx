@@ -18,6 +18,7 @@ interface UserFormData {
   email: string;
   password: string;
   role: "ADMIN" | "SINGER";
+  superuser: boolean;
 }
 
 export default function UserManagement() {
@@ -33,6 +34,7 @@ export default function UserManagement() {
     email: "",
     password: "",
     role: "SINGER",
+    superuser: false,
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -93,6 +95,7 @@ export default function UserManagement() {
           email: "",
           password: "",
           role: "SINGER",
+          superuser: false,
         });
         fetchUsers();
       } else {
@@ -130,6 +133,7 @@ export default function UserManagement() {
           email: "",
           password: "",
           role: "SINGER",
+          superuser: false,
         });
         fetchUsers();
       } else {
@@ -167,6 +171,7 @@ export default function UserManagement() {
       email: user.email,
       password: "",
       role: user.role,
+      superuser: user.superuser,
     });
     setShowEditModal(true);
   };
@@ -175,7 +180,13 @@ export default function UserManagement() {
     setShowCreateModal(false);
     setShowEditModal(false);
     setEditingUser(null);
-    setFormData({ name: "", email: "", password: "", role: "SINGER" });
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: "SINGER",
+      superuser: false,
+    });
     setError("");
     setSuccess("");
   };
@@ -369,6 +380,22 @@ export default function UserManagement() {
                       <option value="SINGER">Исполнитель</option>
                       <option value="ADMIN">Администратор</option>
                     </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Суперпользователь
+                    </label>
+                    <input
+                      type="checkbox"
+                      checked={formData.superuser}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          superuser: e.target.checked,
+                        })
+                      }
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    />
                   </div>
                 </div>
                 <div className="flex justify-end space-x-3 mt-6">
