@@ -48,7 +48,6 @@ model User {
   image         String?
   password      String?
   role          UserRole  @default(SINGER)
-  key           SongKey?  // Performer's preferred key
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -60,7 +59,6 @@ model User {
 model Song {
   id             String    @id @default(cuid())
   title          String
-  tone           SongKey
   bpm            String
   originalSinger String
   author         String

@@ -1,7 +1,5 @@
 "use client";
 
-import { SONG_KEYS, getKeyLabel } from "@/lib/keys";
-import { SongKey } from "@prisma/client";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +9,6 @@ interface User {
   name: string;
   email: string;
   role: "ADMIN" | "SINGER";
-  key?: SongKey;
   createdAt: string;
   updatedAt: string;
 }
@@ -21,7 +18,6 @@ interface UserFormData {
   email: string;
   password: string;
   role: "ADMIN" | "SINGER";
-  key: SongKey | "";
 }
 
 export default function UserManagement() {
@@ -37,7 +33,6 @@ export default function UserManagement() {
     email: "",
     password: "",
     role: "SINGER",
-    key: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -98,7 +93,6 @@ export default function UserManagement() {
           email: "",
           password: "",
           role: "SINGER",
-          key: "",
         });
         fetchUsers();
       } else {
@@ -136,7 +130,6 @@ export default function UserManagement() {
           email: "",
           password: "",
           role: "SINGER",
-          key: "",
         });
         fetchUsers();
       } else {
@@ -174,7 +167,6 @@ export default function UserManagement() {
       email: user.email,
       password: "",
       role: user.role,
-      key: user.key || "",
     });
     setShowEditModal(true);
   };
@@ -183,7 +175,7 @@ export default function UserManagement() {
     setShowCreateModal(false);
     setShowEditModal(false);
     setEditingUser(null);
-    setFormData({ name: "", email: "", password: "", role: "SINGER", key: "" });
+    setFormData({ name: "", email: "", password: "", role: "SINGER" });
     setError("");
     setSuccess("");
   };
@@ -275,11 +267,6 @@ export default function UserManagement() {
                         <div className="text-sm text-gray-500">
                           {user.email}
                         </div>
-                        {user.key && (
-                          <div className="text-xs text-gray-400">
-                            Key: {getKeyLabel(user.key)}
-                          </div>
-                        )}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -383,28 +370,6 @@ export default function UserManagement() {
                       <option value="ADMIN">Администратор</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Предпочитаемая тональность (необязательно)
-                    </label>
-                    <select
-                      value={formData.key}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          key: e.target.value as SongKey | "",
-                        })
-                      }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      <option value="">Выберите тональность</option>
-                      {SONG_KEYS.map((keyOption) => (
-                        <option key={keyOption.value} value={keyOption.value}>
-                          {keyOption.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
                 </div>
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
@@ -494,28 +459,6 @@ export default function UserManagement() {
                     >
                       <option value="SINGER">Исполнитель</option>
                       <option value="ADMIN">Администратор</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Предпочитаемая тональность (необязательно)
-                    </label>
-                    <select
-                      value={formData.key}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          key: e.target.value as SongKey | "",
-                        })
-                      }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      <option value="">Выберите тональность</option>
-                      {SONG_KEYS.map((keyOption) => (
-                        <option key={keyOption.value} value={keyOption.value}>
-                          {keyOption.label}
-                        </option>
-                      ))}
                     </select>
                   </div>
                 </div>
