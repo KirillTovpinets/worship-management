@@ -16,6 +16,8 @@ interface SongsPageProps {
     tags?: string | string[];
     natures?: string | string[];
     hasEvents?: string;
+    sortBy?: string;
+    sortOrder?: string;
   }>;
 }
 
@@ -65,6 +67,8 @@ export default async function SongsPage({
   const hasEvents = searchParams.hasEvents
     ? searchParams.hasEvents === "true"
     : undefined;
+  const sortBy = searchParams.sortBy;
+  const sortOrder = (searchParams.sortOrder as "asc" | "desc") || "asc";
 
   // Calculate pagination
   const skip = (page - 1) * limit;
@@ -135,12 +139,32 @@ export default async function SongsPage({
   // Get total count for pagination
   const totalCount = await prisma.song.count({ where });
 
+  // Build orderBy clause
+  let orderBy: { [key: string]: "asc" | "desc" } = { createdAt: "desc" }; // default sorting
+
+  if (sortBy) {
+    switch (sortBy) {
+      case "title":
+        orderBy = { title: sortOrder };
+        break;
+      case "bpm":
+        orderBy = { bpm: sortOrder };
+        break;
+      case "originalSinger":
+        orderBy = { originalSinger: sortOrder };
+        break;
+      case "author":
+        orderBy = { author: sortOrder };
+        break;
+      default:
+        orderBy = { createdAt: "desc" };
+    }
+  }
+
   // Get songs with pagination and event history
   const songs = await prisma.song.findMany({
     where,
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy,
     skip,
     take: limit,
     include: {
@@ -209,7 +233,7 @@ export default async function SongsPage({
 
   allSongs.forEach((song) => {
     if (song.tags) {
-              song.tags.split("/").forEach((tag) => {
+      song.tags.split("/").forEach((tag) => {
         allTags.add(tag.trim());
       });
     }
@@ -243,8 +267,15 @@ export default async function SongsPage({
   return (
     <SongsClient
       songs={
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        songsWithMatchingUsers as unknown as (Song & { matchingUsers: any[] })[]
+        songsWithMatchingUsers as unknown as (Song & {
+          matchingUsers: Array<{
+            id: string;
+            name: string;
+            email: string;
+            key: string;
+            role: string;
+          }>;
+        })[]
       }
       pagination={pagination}
       filters={filters}
@@ -256,6 +287,8 @@ export default async function SongsPage({
         tags,
         natures,
         hasEvents,
+        sortBy,
+        sortOrder,
       }}
     />
   );

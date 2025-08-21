@@ -210,21 +210,21 @@ export default function UserManagement() {
                 onClick={() => router.push("/admin")}
                 className="text-gray-600 hover:text-gray-900"
               >
-                ← Back to Dashboard
+                ← Назад
               </button>
               <h1 className="text-xl font-semibold text-gray-900">
-                User Management
+                Управление пользователями
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
-                Welcome, {session.user?.name} ({session.user?.role})
+                Добро пожаловать, {session.user?.name} ({session.user?.role})
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
-                Sign Out
+                Выйти
               </button>
             </div>
           </div>
@@ -234,12 +234,12 @@ export default function UserManagement() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Users</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Пользователи</h2>
             <button
               onClick={() => setShowCreateModal(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
             >
-              Add New User
+              Добавить нового пользователя
             </button>
           </div>
 
@@ -296,13 +296,13 @@ export default function UserManagement() {
                         onClick={() => openEditModal(user)}
                         className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
                       >
-                        Edit
+                        Редактировать
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-red-600 hover:text-red-900 text-sm font-medium"
                       >
-                        Delete
+                        Удалить
                       </button>
                     </div>
                   </div>
@@ -319,13 +319,13 @@ export default function UserManagement() {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Create New User
+                Создать нового пользователя
               </h3>
               <form onSubmit={handleCreateUser}>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Name
+                      Имя
                     </label>
                     <input
                       type="text"
@@ -339,7 +339,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Email
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -353,7 +353,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Password
+                      Пароль *
                     </label>
                     <input
                       type="password"
@@ -367,7 +367,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Role
+                      Роль *
                     </label>
                     <select
                       value={formData.role}
@@ -379,13 +379,13 @@ export default function UserManagement() {
                       }
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value="SINGER">Singer</option>
-                      <option value="ADMIN">Admin</option>
+                      <option value="SINGER">Исполнитель</option>
+                      <option value="ADMIN">Администратор</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Preferred Key (optional)
+                      Предпочитаемая тональность (необязательно)
                     </label>
                     <select
                       value={formData.key}
@@ -397,7 +397,7 @@ export default function UserManagement() {
                       }
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value="">Select a key</option>
+                      <option value="">Выберите тональность</option>
                       {SONG_KEYS.map((keyOption) => (
                         <option key={keyOption.value} value={keyOption.value}>
                           {keyOption.label}
@@ -412,13 +412,13 @@ export default function UserManagement() {
                     onClick={closeModals}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Cancel
+                    Отмена
                   </button>
                   <button
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Create User
+                    Создать пользователя
                   </button>
                 </div>
               </form>
@@ -433,13 +433,13 @@ export default function UserManagement() {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Edit User
+                Редактировать пользователя
               </h3>
               <form onSubmit={handleUpdateUser}>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Name
+                      Имя
                     </label>
                     <input
                       type="text"
@@ -453,7 +453,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Email
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -467,7 +467,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Password (leave blank to keep current)
+                      Пароль (оставьте пустым, чтобы оставить текущий)
                     </label>
                     <input
                       type="password"
@@ -480,7 +480,7 @@ export default function UserManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Role
+                      Роль
                     </label>
                     <select
                       value={formData.role}
@@ -492,13 +492,13 @@ export default function UserManagement() {
                       }
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value="SINGER">Singer</option>
-                      <option value="ADMIN">Admin</option>
+                      <option value="SINGER">Исполнитель</option>
+                      <option value="ADMIN">Администратор</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Preferred Key (optional)
+                      Предпочитаемая тональность (необязательно)
                     </label>
                     <select
                       value={formData.key}
@@ -510,7 +510,7 @@ export default function UserManagement() {
                       }
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value="">Select a key</option>
+                      <option value="">Выберите тональность</option>
                       {SONG_KEYS.map((keyOption) => (
                         <option key={keyOption.value} value={keyOption.value}>
                           {keyOption.label}
@@ -525,13 +525,13 @@ export default function UserManagement() {
                     onClick={closeModals}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Cancel
+                    Отмена
                   </button>
                   <button
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Update User
+                    Обновить пользователя
                   </button>
                 </div>
               </form>

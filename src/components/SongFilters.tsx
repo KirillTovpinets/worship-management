@@ -180,7 +180,7 @@ export default function SongFilters({
               d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
             />
           </svg>
-          <span>Filters</span>
+          <span>Фильтры</span>
           {hasActiveFilters && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
               {selectedTones.length +
@@ -212,14 +212,14 @@ export default function SongFilters({
           {/* Header */}
           <div className="p-4 border-b border-gray-200 bg-gray-50">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">Filters</h3>
+              <h3 className="text-lg font-medium text-gray-900">Фильтры</h3>
               <div className="flex items-center space-x-2">
                 {hasActiveFilters && (
                   <button
                     onClick={clearAllFilters}
                     className="text-sm text-red-600 hover:text-red-800"
                   >
-                    Clear All
+                    Очистить все
                   </button>
                 )}
                 <button
@@ -250,13 +250,13 @@ export default function SongFilters({
             {/* Search */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search by Title
+                Поиск по названию
               </label>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search songs..."
+                placeholder="Поиск песен..."
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -264,7 +264,7 @@ export default function SongFilters({
             {/* Tone Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Key ({selectedTones.length} selected)
+                Тональность ({selectedTones.length} выбрано)
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {SONG_KEYS.map((keyOption) => (
@@ -286,7 +286,7 @@ export default function SongFilters({
             {/* Pace Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pace ({selectedPaces.length} selected)
+                Ритм ({selectedPaces.length} выбрано)
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {SONG_PACES.map((paceOption) => (
@@ -309,7 +309,7 @@ export default function SongFilters({
             {filters.styles.length > 0 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Style ({selectedStyles.length} selected)
+                  Стиль ({selectedStyles.length} выбрано)
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {filters.styles.map((style) => (
@@ -333,7 +333,7 @@ export default function SongFilters({
             {filters.tags.length > 0 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags ({selectedTags.length} selected)
+                  Теги ({selectedTags.length} выбрано)
                 </label>
                 <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
                   {filters.tags.map((tag) => (
@@ -355,7 +355,7 @@ export default function SongFilters({
             {filters.natures.length > 0 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nature ({selectedNatures.length} selected)
+                  Характер ({selectedNatures.length} выбрано)
                 </label>
                 <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
                   {filters.natures.map((nature) => (
@@ -378,7 +378,7 @@ export default function SongFilters({
             {/* Events Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Status
+                Статус события
               </label>
               <div className="space-y-2">
                 <label className="flex items-center">
@@ -390,7 +390,7 @@ export default function SongFilters({
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-sm text-gray-700">
-                    Songs with events only
+                    Когда-либо исполненные
                   </span>
                 </label>
                 <label className="flex items-center">
@@ -402,7 +402,7 @@ export default function SongFilters({
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-sm text-gray-700">
-                    Songs without events only
+                    Ниразу не исполненные
                   </span>
                 </label>
                 <label className="flex items-center">
@@ -413,7 +413,7 @@ export default function SongFilters({
                     onChange={() => setHasEvents(undefined)}
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">All songs</span>
+                  <span className="ml-2 text-sm text-gray-700">Все песни</span>
                 </label>
               </div>
             </div>

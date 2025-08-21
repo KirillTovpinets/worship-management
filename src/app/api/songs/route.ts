@@ -21,6 +21,9 @@ export async function GET(request: NextRequest) {
     const styles = searchParams.getAll("styles");
     const tags = searchParams.getAll("tags");
     const natures = searchParams.getAll("natures");
+    const sortBy = searchParams.get("sortBy");
+    const sortOrder =
+      (searchParams.get("sortOrder") as "asc" | "desc") || "asc";
 
     // Calculate pagination
     const skip = (page - 1) * limit;
@@ -81,12 +84,32 @@ export async function GET(request: NextRequest) {
     // Get total count for pagination
     const totalCount = await prisma.song.count({ where });
 
+    // Build orderBy clause
+    let orderBy: { [key: string]: "asc" | "desc" } = { createdAt: "desc" }; // default sorting
+
+    if (sortBy) {
+      switch (sortBy) {
+        case "title":
+          orderBy = { title: sortOrder };
+          break;
+        case "bpm":
+          orderBy = { bpm: sortOrder };
+          break;
+        case "originalSinger":
+          orderBy = { originalSinger: sortOrder };
+          break;
+        case "author":
+          orderBy = { author: sortOrder };
+          break;
+        default:
+          orderBy = { createdAt: "desc" };
+      }
+    }
+
     // Get songs with pagination
     const songs = await prisma.song.findMany({
       where,
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy,
       skip,
       take: limit,
     });

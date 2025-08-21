@@ -69,12 +69,12 @@ export default function AdminDashboardClient({
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <h1 className="text-xl font-semibold text-gray-900">
-                Worship Management - Admin Dashboard
+                Worship Management - Панель администратора
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
-                Welcome, {session.user?.name} ({session.user?.role})
+                Добро пожаловать, {session.user?.name} ({session.user?.role})
                 {session.user?.key &&
                   ` - Key: ${getKeyLabel(session.user.key)}`}
               </span>
@@ -82,7 +82,7 @@ export default function AdminDashboardClient({
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
-                Sign Out
+                Выйти
               </button>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Users
+                        Всего пользователей
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.totalUsers}
@@ -149,7 +149,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Songs
+                        Всего песен
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.totalSongs}
@@ -183,7 +183,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Upcoming Events
+                        Ближайшие события
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.upcomingEvents}
@@ -217,7 +217,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Singers
+                        Исполнители
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.singersCount}
@@ -251,7 +251,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Songs with Events
+                        Песни с событиями
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.songsWithEvents}
@@ -285,7 +285,7 @@ export default function AdminDashboardClient({
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Events
+                        Всего событий
                       </dt>
                       <dd className="text-lg font-medium text-gray-900">
                         {statistics.totalEvents}
@@ -301,26 +301,26 @@ export default function AdminDashboardClient({
             <div className="bg-white shadow rounded-lg">
               <div className="px-4 py-5 sm:p-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Quick Actions
+                  Быстрые действия
                 </h3>
                 <div className="mt-4 space-y-3">
                   <button
                     onClick={() => router.push("/admin/users")}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Manage Users
+                    Управление пользователями
                   </button>
                   <button
                     onClick={() => router.push("/admin/songs")}
                     className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Manage Songs
+                    Управление песнями
                   </button>
                   <button
                     onClick={() => router.push("/admin/schedule")}
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Schedule Event
+                    Планирование события
                   </button>
                 </div>
               </div>
@@ -329,13 +329,13 @@ export default function AdminDashboardClient({
             <div className="bg-white shadow rounded-lg">
               <div className="px-4 py-5 sm:p-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Recent Activity
+                  Последние действия
                 </h3>
                 <div className="mt-4 space-y-4">
                   {/* Recent Events */}
                   <div>
                     <h4 className="text-sm font-medium text-gray-700 mb-2">
-                      Recent Events
+                      Последние события
                     </h4>
                     {recentActivity.recentEvents.length > 0 ? (
                       <div className="space-y-2">
@@ -351,20 +351,22 @@ export default function AdminDashboardClient({
                             <div className="font-medium">{event.title}</div>
                             <div className="text-gray-500">
                               {formatDate(event.date)} • {event.songs.length}{" "}
-                              songs
+                              песен
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-xs">No events found</p>
+                      <p className="text-gray-500 text-xs">
+                        События не найдены
+                      </p>
                     )}
                   </div>
 
                   {/* Recent Songs */}
                   <div>
                     <h4 className="text-sm font-medium text-gray-700 mb-2">
-                      Recent Songs
+                      Последние песни
                     </h4>
                     {recentActivity.recentSongs.length > 0 ? (
                       <div className="space-y-2">
@@ -382,7 +384,7 @@ export default function AdminDashboardClient({
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-xs">No songs found</p>
+                      <p className="text-gray-500 text-xs">Песни не найдены</p>
                     )}
                   </div>
                 </div>
@@ -394,60 +396,66 @@ export default function AdminDashboardClient({
           <div className="mt-8 bg-white shadow rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                System Overview
+                Обзор системы
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">
                     {statistics.totalUsers}
                   </div>
-                  <div className="text-sm text-gray-500">Total Users</div>
+                  <div className="text-sm text-gray-500">
+                    Всего пользователей
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">
                     {statistics.totalSongs}
                   </div>
-                  <div className="text-sm text-gray-500">Total Songs</div>
+                  <div className="text-sm text-gray-500">Всего песен</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-600">
                     {statistics.totalEvents}
                   </div>
-                  <div className="text-sm text-gray-500">Total Events</div>
+                  <div className="text-sm text-gray-500">Всего событий</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-600">
                     {statistics.singersCount}
                   </div>
-                  <div className="text-sm text-gray-500">Active Singers</div>
+                  <div className="text-sm text-gray-500">
+                    Активные исполнители
+                  </div>
                 </div>
               </div>
 
               {/* Additional Insights */}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-4 rounded-md">
-                  <h4 className="font-medium text-gray-900 mb-2">Song Usage</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">
+                    Использование песен
+                  </h4>
                   <div className="text-sm text-gray-600">
                     <div className="flex justify-between">
-                      <span>Songs with events:</span>
+                      <span>Песни с событиями:</span>
                       <span className="font-medium">
                         {statistics.songsWithEvents}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Songs without events:</span>
+                      <span>Песни без событий:</span>
                       <span className="font-medium">
                         {statistics.totalSongs - statistics.songsWithEvents}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Usage rate:</span>
+                      <span>Использование:</span>
                       <span className="font-medium">
                         {statistics.totalSongs > 0
                           ? Math.round(
                               (statistics.songsWithEvents /
                                 statistics.totalSongs) *
-                                100
+                                100,
                             )
                           : 0}
                         %
@@ -458,27 +466,27 @@ export default function AdminDashboardClient({
 
                 <div className="bg-gray-50 p-4 rounded-md">
                   <h4 className="font-medium text-gray-900 mb-2">
-                    Event Status
+                    Статус событий
                   </h4>
                   <div className="text-sm text-gray-600">
                     <div className="flex justify-between">
-                      <span>Upcoming events:</span>
+                      <span>Ближайшие события:</span>
                       <span className="font-medium text-blue-600">
                         {statistics.upcomingEvents}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Past events:</span>
+                      <span>Прошедшие события:</span>
                       <span className="font-medium text-gray-600">
                         {statistics.totalEvents - statistics.upcomingEvents}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Events this month:</span>
+                      <span>События этого месяца:</span>
                       <span className="font-medium">
                         {statistics.upcomingEvents > 0
-                          ? "Active"
-                          : "None scheduled"}
+                          ? "Активные"
+                          : "Не запланированы"}
                       </span>
                     </div>
                   </div>

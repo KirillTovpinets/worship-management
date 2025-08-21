@@ -48,18 +48,20 @@ export default function ScheduleClient({
     new Set(
       songs
         .flatMap((song) => song.tags.split("/").map((tag) => tag.trim()))
-        .filter((tag) => tag.length > 0)
-    )
+        .filter((tag) => tag.length > 0),
+    ),
   ).sort();
 
   const uniqueStyles = Array.from(
-    new Set(songs.map((song) => song.style).filter((style) => style.length > 0))
+    new Set(
+      songs.map((song) => song.style).filter((style) => style.length > 0),
+    ),
   ).sort();
 
   const uniqueNatures = Array.from(
     new Set(
-      songs.map((song) => song.nature).filter((nature) => nature.length > 0)
-    )
+      songs.map((song) => song.nature).filter((nature) => nature.length > 0),
+    ),
   ).sort();
 
   // Filter songs based on selected filters
@@ -92,21 +94,21 @@ export default function ScheduleClient({
   }
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
   ];
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
   const navigateMonth = (direction: "prev" | "next") => {
     let newYear = currentYear;
@@ -231,9 +233,7 @@ export default function ScheduleClient({
                         d="M10 19l-7-7m0 0l7-7m-7 7h18"
                       />
                     </svg>
-                    <span className="text-sm font-medium">
-                      Back to Dashboard
-                    </span>
+                    <span className="text-sm font-medium">Назад</span>
                   </button>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -282,7 +282,7 @@ export default function ScheduleClient({
                     onClick={() => openEventModal(new Date())}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Add Event
+                    Добавить событие
                   </button>
                 </div>
               </div>
@@ -365,13 +365,13 @@ export default function ScheduleClient({
           <div className="bg-white rounded-lg shadow">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
-                Events for {monthNames[currentMonth - 1]} {currentYear}
+                События для {monthNames[currentMonth - 1]} {currentYear}
               </h2>
             </div>
             <div className="p-6">
               {events.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
-                  No events scheduled for this month.
+                  Нет событий, запланированных на этот месяц.
                 </p>
               ) : (
                 <div className="space-y-4">
@@ -398,7 +398,7 @@ export default function ScheduleClient({
                           onClick={() => handleDeleteEvent(event.id)}
                           className="text-red-600 hover:text-red-800 text-sm"
                         >
-                          Delete
+                          Удалить
                         </button>
                       </div>
                       {event.description && (
@@ -409,7 +409,7 @@ export default function ScheduleClient({
                       {event.songs.length > 0 && (
                         <div>
                           <h4 className="text-sm font-medium text-gray-700 mb-2">
-                            Songs ({event.songs.length})
+                            Песни ({event.songs.length})
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {event.songs.map((eventSong, index) => (
@@ -438,13 +438,13 @@ export default function ScheduleClient({
           <div className="relative top-10 mx-auto p-6 border w-full max-w-2xl shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-xl font-medium text-gray-900 mb-6">
-                Create Event for {selectedDate.toLocaleDateString()}
+                Создать событие для {selectedDate.toLocaleDateString()}
               </h3>
               <form onSubmit={handleCreateEvent}>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Event Title *
+                      Название события *
                     </label>
                     <input
                       type="text"
@@ -458,7 +458,7 @@ export default function ScheduleClient({
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Description
+                      Описание
                     </label>
                     <textarea
                       value={eventForm.description}
@@ -474,7 +474,7 @@ export default function ScheduleClient({
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Songs
+                      Выберите песни
                     </label>
 
                     {/* Filter Controls */}
@@ -482,7 +482,7 @@ export default function ScheduleClient({
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">
-                            Filter by Tags
+                            Фильтровать по тегам
                           </label>
                           <select
                             value={songFilters.tags}
@@ -494,7 +494,7 @@ export default function ScheduleClient({
                             }
                             className="block w-full text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           >
-                            <option value="">All Tags</option>
+                            <option value="">Все теги</option>
                             {uniqueTags.map((tag) => (
                               <option key={tag} value={tag}>
                                 {tag}
@@ -505,7 +505,7 @@ export default function ScheduleClient({
 
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">
-                            Filter by Style
+                            Фильтровать по стилю
                           </label>
                           <select
                             value={songFilters.styles}
@@ -517,7 +517,7 @@ export default function ScheduleClient({
                             }
                             className="block w-full text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           >
-                            <option value="">All Styles</option>
+                            <option value="">Все стили</option>
                             {uniqueStyles.map((style) => (
                               <option key={style} value={style}>
                                 {style}
@@ -528,7 +528,7 @@ export default function ScheduleClient({
 
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">
-                            Filter by Nature
+                            Фильтровать по характеру
                           </label>
                           <select
                             value={songFilters.nature}
@@ -540,7 +540,7 @@ export default function ScheduleClient({
                             }
                             className="block w-full text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           >
-                            <option value="">All Natures</option>
+                            <option value="">Все характеры</option>
                             {uniqueNatures.map((nature) => (
                               <option key={nature} value={nature}>
                                 {nature}
@@ -566,7 +566,7 @@ export default function ScheduleClient({
                             }
                             className="text-xs text-indigo-600 hover:text-indigo-800 underline"
                           >
-                            Clear all filters
+                            Очистить все фильтры
                           </button>
                         </div>
                       )}
@@ -576,7 +576,7 @@ export default function ScheduleClient({
                     <div className="mt-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-2">
                       {filteredSongs.length === 0 ? (
                         <p className="text-sm text-gray-500 text-center py-4">
-                          No songs match the selected filters.
+                          Нет песен, соответствующих выбранным фильтрам.
                         </p>
                       ) : (
                         filteredSongs.map((song) => (
@@ -587,7 +587,7 @@ export default function ScheduleClient({
                             <input
                               type="checkbox"
                               checked={eventForm.selectedSongs.includes(
-                                song.id
+                                song.id,
                               )}
                               onChange={(e) => {
                                 if (e.target.checked) {
@@ -607,7 +607,7 @@ export default function ScheduleClient({
                                 } else {
                                   const newSelectedSongs =
                                     eventForm.selectedSongs.filter(
-                                      (id) => id !== song.id
+                                      (id) => id !== song.id,
                                     );
                                   setEventForm({
                                     ...eventForm,
@@ -616,8 +616,8 @@ export default function ScheduleClient({
                                   // Remove from song order
                                   setSongOrder(
                                     songOrder.filter(
-                                      (item) => item.id !== song.id
-                                    )
+                                      (item) => item.id !== song.id,
+                                    ),
                                   );
                                 }
                               }}
@@ -639,7 +639,7 @@ export default function ScheduleClient({
                     {/* Selected Songs Count */}
                     {eventForm.selectedSongs.length > 0 && (
                       <div className="mt-2 text-xs text-gray-600">
-                        {eventForm.selectedSongs.length} song(s) selected
+                        {eventForm.selectedSongs.length} песни выбраны
                       </div>
                     )}
                   </div>
@@ -648,7 +648,7 @@ export default function ScheduleClient({
                   {songOrder.length > 0 && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Song Order (drag to reorder)
+                        Порядок песен (перетащите для изменения)
                       </label>
                       <div className="border border-gray-300 rounded-md p-3 bg-gray-50">
                         {songOrder.map((song, index) => (
@@ -735,13 +735,13 @@ export default function ScheduleClient({
                                 type="button"
                                 onClick={() => {
                                   setSongOrder(
-                                    songOrder.filter((_, i) => i !== index)
+                                    songOrder.filter((_, i) => i !== index),
                                   );
                                   setEventForm({
                                     ...eventForm,
                                     selectedSongs:
                                       eventForm.selectedSongs.filter(
-                                        (id) => id !== song.id
+                                        (id) => id !== song.id,
                                       ),
                                   });
                                 }}
@@ -774,13 +774,13 @@ export default function ScheduleClient({
                     onClick={() => setShowEventModal(false)}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Cancel
+                    Отмена
                   </button>
                   <button
                     type="submit"
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Create Event
+                    Создать событие
                   </button>
                 </div>
               </form>
