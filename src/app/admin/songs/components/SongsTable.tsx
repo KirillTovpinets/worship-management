@@ -90,16 +90,16 @@ export const SongsTable = ({
                 {song.adaptations && song.adaptations.length > 0 ? (
                   <div className="flex items-center space-x-2">
                     <WBadgeGroup>
-                      {song.adaptations.slice(0, 2).map((adaptation) => (
+                      {song.adaptations.slice(0, 3).map((adaptation) => (
                         <WBadge key={adaptation.id} variant="success" size="sm">
                           {adaptation.singer.name} (
                           {getKeyLabel(adaptation.key)})
                         </WBadge>
                       ))}
                     </WBadgeGroup>
-                    {song.adaptations.length > 2 && (
+                    {song.adaptations.length > 3 && (
                       <span className="text-xs text-gray-500">
-                        +{song.adaptations.length - 2} ещё
+                        +{song.adaptations.length - 3} ещё
                       </span>
                     )}
                   </div>

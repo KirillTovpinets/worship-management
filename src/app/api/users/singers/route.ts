@@ -12,9 +12,6 @@ export async function GET() {
     }
 
     const singers = await prisma.user.findMany({
-      where: {
-        role: "SINGER",
-      },
       select: {
         id: true,
         name: true,
