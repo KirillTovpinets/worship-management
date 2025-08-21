@@ -24,6 +24,7 @@ export async function GET(
         name: true,
         email: true,
         role: true,
+        superuser: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -56,7 +57,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role } = await request.json();
+    const { name, email, password, role, superuser } = await request.json();
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
@@ -90,7 +91,7 @@ export async function PUT(
     if (password) {
       updateData.password = await bcrypt.hash(password, 12);
     }
-
+    updateData.superuser = superuser;
     // Update user
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -100,6 +101,7 @@ export async function PUT(
         name: true,
         email: true,
         role: true,
+        superuser: true,
         createdAt: true,
         updatedAt: true,
       },

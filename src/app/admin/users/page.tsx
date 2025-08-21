@@ -11,6 +11,7 @@ interface User {
   role: "ADMIN" | "SINGER";
   createdAt: string;
   updatedAt: string;
+  superuser: boolean;
 }
 
 interface UserFormData {
@@ -381,22 +382,24 @@ export default function UserManagement() {
                       <option value="ADMIN">Администратор</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Суперпользователь
-                    </label>
-                    <input
-                      type="checkbox"
-                      checked={formData.superuser}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          superuser: e.target.checked,
-                        })
-                      }
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                  </div>
+                  {formData.role === "ADMIN" && (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.superuser}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            superuser: e.target.checked,
+                          })
+                        }
+                        className="inline-block mt-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <label className="text-sm font-medium text-gray-700 flex-grow-1">
+                        Суперпользователь
+                      </label>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
@@ -488,6 +491,24 @@ export default function UserManagement() {
                       <option value="ADMIN">Администратор</option>
                     </select>
                   </div>
+                  {formData.role === "ADMIN" && (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.superuser}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            superuser: e.target.checked,
+                          })
+                        }
+                        className="inline-block mt-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <label className="text-sm font-medium text-gray-700 flex-grow-1">
+                        Суперпользователь
+                      </label>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
