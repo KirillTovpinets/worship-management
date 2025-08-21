@@ -1,4 +1,4 @@
-import { PrismaClient, SongKey, SongPace } from "@prisma/client";
+import { PrismaClient, SongPace } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -21,7 +21,6 @@ async function main() {
         email: "admin@worship.com",
         password: hashedPassword,
         role: "ADMIN",
-        key: SongKey.C,
       },
     });
 
@@ -48,7 +47,6 @@ async function main() {
         email: "singer@worship.com",
         password: hashedPassword,
         role: "SINGER",
-        key: SongKey.F_SHARP,
       },
     });
 
@@ -65,31 +63,26 @@ async function main() {
       name: "Sarah Johnson",
       email: "sarah@worship.com",
       password: "sarah123",
-      key: SongKey.G,
     },
     {
       name: "Michael Chen",
       email: "michael@worship.com",
       password: "michael123",
-      key: SongKey.C,
     },
     {
       name: "Emily Davis",
       email: "emily@worship.com",
       password: "emily123",
-      key: SongKey.D,
     },
     {
       name: "David Wilson",
       email: "david@worship.com",
       password: "david123",
-      key: SongKey.A,
     },
     {
       name: "Lisa Brown",
       email: "lisa@worship.com",
       password: "lisa123",
-      key: SongKey.E,
     },
   ];
 
@@ -109,7 +102,6 @@ async function main() {
           email: singer.email,
           password: hashedPassword,
           role: "SINGER",
-          key: singer.key,
         },
       });
 
@@ -123,7 +115,6 @@ async function main() {
   const sampleSongs = [
     {
       title: "Amazing Grace",
-      tone: SongKey.G,
       bpm: "80",
       originalSinger: "John Newton",
       author: "John Newton",
@@ -158,7 +149,6 @@ Than when we'd first begun.`,
     },
     {
       title: "How Great Thou Art",
-      tone: SongKey.C,
       bpm: "72",
       originalSinger: "Carl Boberg",
       author: "Carl Boberg",
@@ -169,7 +159,6 @@ Than when we'd first begun.`,
     },
     {
       title: "10,000 Reasons",
-      tone: SongKey.D,
       bpm: "140",
       originalSinger: "Matt Redman",
       author: "Matt Redman",
@@ -180,7 +169,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Oceans (Where Feet May Fail)",
-      tone: SongKey.E,
       bpm: "68",
       originalSinger: "Hillsong United",
       author: "Joel Houston",
@@ -191,7 +179,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Good Good Father",
-      tone: SongKey.A,
       bpm: "120",
       originalSinger: "Chris Tomlin",
       author: "Pat Barrett",
@@ -202,7 +189,6 @@ Than when we'd first begun.`,
     },
     {
       title: "What a Beautiful Name",
-      tone: SongKey.B,
       bpm: "130",
       originalSinger: "Hillsong Worship",
       author: "Ben Fielding",
@@ -213,7 +199,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Reckless Love",
-      tone: SongKey.F,
       bpm: "75",
       originalSinger: "Cory Asbury",
       author: "Cory Asbury",
@@ -224,7 +209,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Great Are You Lord",
-      tone: SongKey.G,
       bpm: "85",
       originalSinger: "All Sons & Daughters",
       author: "Leslie Jordan",
@@ -235,7 +219,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Build My Life",
-      tone: SongKey.C,
       bpm: "140",
       originalSinger: "Housefires",
       author: "Brett Younker",
@@ -246,7 +229,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Way Maker",
-      tone: SongKey.D,
       bpm: "150",
       originalSinger: "Sinach",
       author: "Sinach",
@@ -257,7 +239,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Holy Spirit",
-      tone: SongKey.E,
       bpm: "70",
       originalSinger: "Francesca Battistelli",
       author: "Francesca Battistelli",
@@ -268,7 +249,6 @@ Than when we'd first begun.`,
     },
     {
       title: "King of Kings",
-      tone: SongKey.A,
       bpm: "135",
       originalSinger: "Hillsong Worship",
       author: "Brooke Ligertwood",
@@ -279,7 +259,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Living Hope",
-      tone: SongKey.F,
       bpm: "145",
       originalSinger: "Phil Wickham",
       author: "Phil Wickham",
@@ -290,7 +269,6 @@ Than when we'd first begun.`,
     },
     {
       title: "Graves Into Gardens",
-      tone: SongKey.G,
       bpm: "125",
       originalSinger: "Elevation Worship",
       author: "Chris Brown",
@@ -301,7 +279,6 @@ Than when we'd first begun.`,
     },
     {
       title: "The Blessing",
-      tone: SongKey.C,
       bpm: "80",
       originalSinger: "Kari Jobe",
       author: "Kari Jobe",

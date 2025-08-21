@@ -29,7 +29,6 @@ async function createAdminUser() {
         email: "admin@worship.com",
         password: hashedPassword,
         role: "ADMIN",
-        key: "C", // Default key
       },
     });
 

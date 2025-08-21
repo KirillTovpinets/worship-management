@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
-    const tones = searchParams.getAll("tones");
     const paces = searchParams.getAll("paces");
     const styles = searchParams.getAll("styles");
     const tags = searchParams.getAll("tags");
@@ -38,13 +37,6 @@ export async function GET(request: NextRequest) {
       where.title = {
         contains: search,
         mode: "insensitive",
-      };
-    }
-
-    // Filter by tone
-    if (tones.length > 0) {
-      where.tone = {
-        in: tones,
       };
     }
 
@@ -138,12 +130,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Get unique values for filter options
-    const uniqueTones = await prisma.song.findMany({
-      select: { tone: true },
-      distinct: ["tone"],
-      orderBy: { tone: "asc" },
-    });
-
     const uniquePaces = await prisma.song.findMany({
       select: { pace: true },
       distinct: ["pace"],
@@ -202,14 +188,12 @@ export async function GET(request: NextRequest) {
         hasPrevPage: page > 1,
       },
       filters: {
-        tones: uniqueTones.map((t) => t.tone),
         paces: uniquePaces.map((p) => p.pace),
         styles: uniqueStyles.map((s) => s.style),
         tags: uniqueTags,
         natures: uniqueNatures,
         matchingSingers: uniqueMatchingSingers.map((s) => ({
           name: s.originalSinger,
-          key: s.originalSinger,
         })),
       },
     });
@@ -233,7 +217,6 @@ export async function POST(request: NextRequest) {
 
     const {
       title,
-      tone,
       bpm,
       originalSinger,
       author,
@@ -246,7 +229,6 @@ export async function POST(request: NextRequest) {
 
     if (
       !title ||
-      !tone ||
       !bpm ||
       !originalSinger ||
       !author ||
@@ -265,7 +247,6 @@ export async function POST(request: NextRequest) {
     const song = await prisma.song.create({
       data: {
         title,
-        tone,
         bpm,
         originalSinger,
         author,

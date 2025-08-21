@@ -75,7 +75,6 @@ export default async function AdminDashboard() {
       select: {
         id: true,
         title: true,
-        tone: true,
         createdAt: true,
       },
     }),

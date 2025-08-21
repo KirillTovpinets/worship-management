@@ -1,6 +1,5 @@
 "use client";
 
-import { getKeyLabel } from "@/lib/songs";
 import { useModalContext } from "../contexts/ModalContext";
 
 // Helper function to format date
@@ -59,14 +58,6 @@ export const HistoryModal = () => {
                 Информация о песне
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-gray-600">
-                    Тональность:
-                  </span>{" "}
-                  <span className="ml-2 text-gray-900">
-                    {getKeyLabel(viewingSongHistory.tone)}
-                  </span>
-                </div>
                 <div>
                   <span className="font-medium text-gray-600">Темп:</span>{" "}
                   <span className="ml-2 text-gray-900">

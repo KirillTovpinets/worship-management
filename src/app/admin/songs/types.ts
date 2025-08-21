@@ -3,7 +3,6 @@ import { SongKey, SongPace } from "@prisma/client";
 export interface Song {
   id: string;
   title: string;
-  tone: SongKey;
   bpm: string;
   originalSinger: string;
   author: string;
@@ -62,7 +61,6 @@ export interface PaginationData {
 }
 
 export interface FilterOptions {
-  tones: string[];
   paces: string[];
   styles: string[];
   tags: string[];
@@ -71,7 +69,6 @@ export interface FilterOptions {
 
 export interface CurrentFilters {
   search: string;
-  tones: string[];
   paces: string[];
   styles: string[];
   tags: string[];
@@ -90,7 +87,6 @@ export interface SongsClientProps {
 
 export interface SongFormData {
   title: string;
-  tone: SongKey;
   bpm: string;
   originalSinger: string;
   author: string;

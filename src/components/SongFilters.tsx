@@ -1,10 +1,9 @@
 "use client";
 
-import { SONG_KEYS, SONG_PACES } from "@/lib/songs";
+import { SONG_PACES } from "@/lib/songs";
 import { useEffect, useState } from "react";
 
 interface FilterOptions {
-  tones: string[];
   paces: string[];
   styles: string[];
   tags: string[];
@@ -15,7 +14,6 @@ interface SongFiltersProps {
   filters: FilterOptions;
   currentFilters: {
     search: string;
-    tones: string[];
     paces: string[];
     styles: string[];
     tags: string[];
@@ -24,7 +22,6 @@ interface SongFiltersProps {
   };
   onFiltersChange: (filters: {
     search: string;
-    tones: string[];
     paces: string[];
     styles: string[];
     tags: string[];
@@ -40,9 +37,6 @@ export default function SongFilters({
   onFiltersChange,
 }: SongFiltersProps) {
   const [search, setSearch] = useState(currentFilters.search);
-  const [selectedTones, setSelectedTones] = useState<string[]>(
-    currentFilters.tones,
-  );
   const [selectedPaces, setSelectedPaces] = useState<string[]>(
     currentFilters.paces,
   );
@@ -66,7 +60,6 @@ export default function SongFilters({
     const timer = setTimeout(() => {
       onFiltersChange({
         search,
-        tones: selectedTones,
         paces: selectedPaces,
         styles: selectedStyles,
         tags: selectedTags,
@@ -78,7 +71,6 @@ export default function SongFilters({
     return () => clearTimeout(timer);
   }, [
     search,
-    selectedTones,
     selectedPaces,
     selectedStyles,
     selectedTags,
@@ -91,7 +83,6 @@ export default function SongFilters({
   useEffect(() => {
     onFiltersChange({
       search,
-      tones: selectedTones,
       paces: selectedPaces,
       styles: selectedStyles,
       tags: selectedTags,
@@ -100,7 +91,6 @@ export default function SongFilters({
     });
   }, [
     search,
-    selectedTones,
     selectedPaces,
     selectedStyles,
     selectedTags,
@@ -108,12 +98,6 @@ export default function SongFilters({
     hasEvents,
     onFiltersChange,
   ]);
-
-  const handleToneToggle = (tone: string) => {
-    setSelectedTones((prev) =>
-      prev.includes(tone) ? prev.filter((t) => t !== tone) : [...prev, tone],
-    );
-  };
 
   const handlePaceToggle = (pace: string) => {
     setSelectedPaces((prev) =>
@@ -143,7 +127,6 @@ export default function SongFilters({
 
   const clearAllFilters = () => {
     setSearch("");
-    setSelectedTones([]);
     setSelectedPaces([]);
     setSelectedStyles([]);
     setSelectedTags([]);
@@ -153,7 +136,6 @@ export default function SongFilters({
 
   const hasActiveFilters =
     search ||
-    selectedTones.length > 0 ||
     selectedPaces.length > 0 ||
     selectedStyles.length > 0 ||
     selectedTags.length > 0 ||
@@ -185,8 +167,7 @@ export default function SongFilters({
           <span>Фильтры</span>
           {hasActiveFilters && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
-              {selectedTones.length +
-                selectedPaces.length +
+              {selectedPaces.length +
                 selectedStyles.length +
                 selectedTags.length +
                 selectedNatures.length +
@@ -261,28 +242,6 @@ export default function SongFilters({
                 placeholder="Поиск песен..."
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
-            </div>
-
-            {/* Tone Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Тональность ({selectedTones.length} выбрано)
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {SONG_KEYS.map((keyOption) => (
-                  <label key={keyOption.value} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedTones.includes(keyOption.value)}
-                      onChange={() => handleToneToggle(keyOption.value)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      {keyOption.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
             </div>
 
             {/* Pace Filter */}

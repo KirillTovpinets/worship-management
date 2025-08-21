@@ -9,7 +9,6 @@ interface SongsPageProps {
     page?: string;
     limit?: string;
     search?: string;
-    tones?: string | string[];
     paces?: string | string[];
     styles?: string | string[];
     tags?: string | string[];
@@ -38,11 +37,6 @@ export default async function SongsPage({
   const page = parseInt(searchParams.page || "1");
   const limit = parseInt(searchParams.limit || "10");
   const search = searchParams.search || "";
-  const tones = Array.isArray(searchParams.tones)
-    ? searchParams.tones
-    : searchParams.tones
-    ? [searchParams.tones]
-    : [];
   const paces = Array.isArray(searchParams.paces)
     ? searchParams.paces
     : searchParams.paces
@@ -80,13 +74,6 @@ export default async function SongsPage({
   if (search) {
     where.title = {
       contains: search,
-    };
-  }
-
-  // Filter by tone
-  if (tones.length > 0) {
-    where.tone = {
-      in: tones,
     };
   }
 
@@ -194,12 +181,6 @@ export default async function SongsPage({
   });
 
   // Get unique values for filter options
-  const uniqueTones = await prisma.song.findMany({
-    select: { tone: true },
-    distinct: ["tone"],
-    orderBy: { tone: "asc" },
-  });
-
   const uniquePaces = await prisma.song.findMany({
     select: { pace: true },
     distinct: ["pace"],
@@ -246,7 +227,6 @@ export default async function SongsPage({
   };
 
   const filters = {
-    tones: uniqueTones.map((t) => t.tone),
     paces: uniquePaces.map((p) => p.pace),
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
@@ -264,7 +244,6 @@ export default async function SongsPage({
       filters={filters}
       currentFilters={{
         search,
-        tones,
         paces,
         styles,
         tags,

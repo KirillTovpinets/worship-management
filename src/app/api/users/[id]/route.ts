@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - Get specific user
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   try {
@@ -24,7 +24,6 @@ export async function GET(
         name: true,
         email: true,
         role: true,
-        key: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -39,7 +38,7 @@ export async function GET(
     console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -47,7 +46,7 @@ export async function GET(
 // PUT - Update user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   try {
@@ -57,7 +56,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role, key } = await request.json();
+    const { name, email, password, role } = await request.json();
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
@@ -77,7 +76,7 @@ export async function PUT(
       if (emailExists) {
         return NextResponse.json(
           { error: "Email already exists" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -88,7 +87,6 @@ export async function PUT(
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (role) updateData.role = role;
-    if (key !== undefined) updateData.key = key || null;
     if (password) {
       updateData.password = await bcrypt.hash(password, 12);
     }
@@ -102,7 +100,6 @@ export async function PUT(
         name: true,
         email: true,
         role: true,
-        key: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -116,7 +113,7 @@ export async function PUT(
     console.error("Error updating user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -124,7 +121,7 @@ export async function PUT(
 // DELETE - Delete user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   try {
@@ -138,7 +135,7 @@ export async function DELETE(
     if (id === session.user.id) {
       return NextResponse.json(
         { error: "Cannot delete your own account" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -163,7 +160,7 @@ export async function DELETE(
     console.error("Error deleting user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

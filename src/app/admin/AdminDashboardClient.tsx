@@ -1,7 +1,5 @@
 "use client";
 
-import { getKeyLabel } from "@/lib/keys";
-import { SongKey } from "@prisma/client";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -30,7 +28,6 @@ interface RecentActivity {
   recentSongs: Array<{
     id: string;
     title: string;
-    tone: string;
     createdAt: Date;
   }>;
 }
@@ -75,8 +72,6 @@ export default function AdminDashboardClient({
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
                 Добро пожаловать, {session.user?.name} ({session.user?.role})
-                {session.user?.key &&
-                  ` - Тональность: ${getKeyLabel(session.user.key)}`}
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
@@ -377,7 +372,6 @@ export default function AdminDashboardClient({
                           >
                             <div className="font-medium">{song.title}</div>
                             <div className="text-gray-500">
-                              Key: {getKeyLabel(song.tone as SongKey)} •{" "}
                               {formatDate(song.createdAt)}
                             </div>
                           </div>

@@ -2,7 +2,7 @@
 
 import { WModal } from "@/components/ui/WModal";
 import { SONG_PACES } from "@/lib/songs";
-import { SongKey, SongPace } from "@prisma/client";
+import { SongPace } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useModalContext } from "./contexts/ModalContext";
 import { useSongsManagementContext } from "./contexts/SongsManagementContext";
@@ -14,7 +14,6 @@ export const EditSongModal = () => {
 
   const [formData, setFormData] = useState<SongFormData>({
     title: "",
-    tone: "C" as SongKey,
     bpm: "",
     originalSinger: "",
     author: "",
@@ -29,7 +28,6 @@ export const EditSongModal = () => {
     if (editingSong) {
       setFormData({
         title: editingSong.title,
-        tone: editingSong.tone,
         bpm: editingSong.bpm,
         originalSinger: editingSong.originalSinger,
         author: editingSong.author,

@@ -16,7 +16,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
 
       // Clear existing filter params (but preserve sort params)
       params.delete("search");
-      params.delete("tones");
       params.delete("paces");
       params.delete("styles");
       params.delete("tags");
@@ -29,7 +28,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
         params.set("search", newFilters.search);
       }
 
-      newFilters.tones.forEach((tone) => params.append("tones", tone));
       newFilters.paces.forEach((pace) => params.append("paces", pace));
       newFilters.styles.forEach((style) => params.append("styles", style));
       newFilters.tags.forEach((tag) => params.append("tags", tag));
@@ -72,8 +70,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       // Only update if filters actually changed (excluding sort params)
       const hasChanged =
         newFilters.search !== currentFilters.search ||
-        JSON.stringify(newFilters.tones) !==
-          JSON.stringify(currentFilters.tones) ||
         JSON.stringify(newFilters.paces) !==
           JSON.stringify(currentFilters.paces) ||
         JSON.stringify(newFilters.styles) !==

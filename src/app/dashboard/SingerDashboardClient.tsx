@@ -2,8 +2,8 @@
 
 import Pagination from "@/components/Pagination";
 import SingerSongFilters from "@/components/SingerSongFilters";
-import { getKeyLabel, getPaceLabel } from "@/lib/songs";
-import { SongKey, SongPace } from "@prisma/client";
+import { getPaceLabel } from "@/lib/songs";
+import { SongPace } from "@prisma/client";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,7 +26,6 @@ const isPastEvent = (date: Date) => {
 interface Song {
   id: string;
   title: string;
-  tone: SongKey;
   bpm: string;
   originalSinger: string;
   author: string;
@@ -56,7 +55,6 @@ interface Song {
     id: string;
     name: string;
     email: string;
-    key: string;
     role: string;
   }>;
 }
@@ -71,7 +69,6 @@ interface PaginationData {
 }
 
 interface FilterOptions {
-  tones: string[];
   paces: string[];
   styles: string[];
   tags: string[];
@@ -85,7 +82,6 @@ interface SingerDashboardClientProps {
   filters: FilterOptions;
   currentFilters: {
     search: string;
-    tones: string[];
     paces: string[];
     styles: string[];
     tags: string[];
@@ -118,7 +114,6 @@ export default function SingerDashboardClient({
 
       // Clear existing filter params
       params.delete("search");
-      params.delete("tones");
       params.delete("paces");
       params.delete("styles");
       params.delete("tags");
@@ -132,7 +127,6 @@ export default function SingerDashboardClient({
         params.set("search", newFilters.search);
       }
 
-      newFilters.tones.forEach((tone) => params.append("tones", tone));
       newFilters.paces.forEach((pace) => params.append("paces", pace));
       newFilters.styles.forEach((style) => params.append("styles", style));
       newFilters.tags.forEach((tag) => params.append("tags", tag));
@@ -182,8 +176,6 @@ export default function SingerDashboardClient({
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
                 Welcome, {session.user?.name} ({session.user?.role})
-                {session.user?.key &&
-                  ` - Key: ${getKeyLabel(session.user.key)}`}
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
@@ -245,7 +237,6 @@ export default function SingerDashboardClient({
                             {song.title}
                           </h3>
                           <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                            <span>Key: {getKeyLabel(song.tone)}</span>
                             <span>BPM: {song.bpm}</span>
                             <span>Pace: {getPaceLabel(song.pace)}</span>
                           </div>
@@ -311,7 +302,7 @@ export default function SingerDashboardClient({
                               ) : (
                                 <div className="mt-1">
                                   <span className="text-gray-400 text-xs">
-                                    No singers available for this key
+                                    No singers available
                                   </span>
                                 </div>
                               )}
@@ -421,12 +412,6 @@ export default function SingerDashboardClient({
                     Song Information
                   </h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-600">Key:</span>
-                      <span className="ml-2 text-gray-900">
-                        {getKeyLabel(viewingSongHistory.tone)}
-                      </span>
-                    </div>
                     <div>
                       <span className="font-medium text-gray-600">BPM:</span>
                       <span className="ml-2 text-gray-900">

@@ -1,4 +1,4 @@
-import { PrismaClient, SongKey, UserRole } from "@prisma/client";
+import { PrismaClient, UserRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -8,7 +8,6 @@ interface AdminUserData {
   email: string;
   password: string;
   role?: UserRole;
-  key?: SongKey;
 }
 
 async function createAdminUser(userData?: Partial<AdminUserData>) {
@@ -19,7 +18,6 @@ async function createAdminUser(userData?: Partial<AdminUserData>) {
       email: "admin@worship.com",
       password: "admin123",
       role: "ADMIN",
-      key: "C",
     };
 
     // Merge with provided data
@@ -49,7 +47,6 @@ async function createAdminUser(userData?: Partial<AdminUserData>) {
         email: finalData.email,
         password: hashedPassword,
         role: finalData.role,
-        key: finalData.key,
       },
     });
 
@@ -57,7 +54,6 @@ async function createAdminUser(userData?: Partial<AdminUserData>) {
     console.log(`Email: ${adminUser.email}`);
     console.log(`Name: ${adminUser.name}`);
     console.log(`Role: ${adminUser.role}`);
-    console.log(`Key: ${adminUser.key}`);
     console.log(`Password: ${finalData.password}`);
     console.log("\n⚠️  Please change the password after first login!");
 

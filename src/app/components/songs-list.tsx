@@ -1,8 +1,8 @@
 "use client";
 
 import Pagination from "@/components/Pagination";
-import { getKeyLabel, getPaceLabel } from "@/lib/songs";
-import type { Song, SongKey, SongPace } from "@prisma/client";
+import { getPaceLabel } from "@/lib/songs";
+import type { Song, SongPace } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -26,7 +26,6 @@ interface PaginationData {
 
 interface SongFormData {
   title: string;
-  tone: SongKey;
   bpm: string;
   originalSinger: string;
   author: string;
@@ -123,7 +122,6 @@ export default function SongsList({
   const openEditModal = (song: Song) => {
     setFormData({
       title: song.title,
-      tone: song.tone,
       bpm: song.bpm,
       originalSinger: song.originalSinger,
       author: song.author,
@@ -136,7 +134,6 @@ export default function SongsList({
 
   const [, setFormData] = useState<SongFormData>({
     title: "",
-    tone: "C" as SongKey,
     bpm: "",
     originalSinger: "",
     author: "",
@@ -168,7 +165,6 @@ export default function SongsList({
                         {song.title}
                       </h3>
                       <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                        <span>Key: {getKeyLabel(song.tone)}</span>
                         <span>BPM: {song.bpm}</span>
                         <span>Pace: {getPaceLabel(song.pace)}</span>
                       </div>

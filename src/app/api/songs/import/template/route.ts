@@ -15,7 +15,6 @@ export async function GET() {
     const sampleData = [
       {
         title: "Amazing Grace",
-        tone: "G",
         bpm: "80",
         originalSinger: "John Newton",
         author: "John Newton",
@@ -28,7 +27,6 @@ export async function GET() {
       },
       {
         title: "10,000 Reasons",
-        tone: "D",
         bpm: "140",
         originalSinger: "Matt Redman",
         author: "Matt Redman",

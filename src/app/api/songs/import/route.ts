@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SongKey, SongPace } from "@prisma/client";
+import { SongPace } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
     // Expected columns mapping
     const expectedColumns = {
       title: ["title", "song title", "name", "song name"],
-      tone: ["tone", "key", "song key"],
       bpm: ["bpm", "tempo", "beats per minute"],
       originalSinger: ["original singer", "singer", "artist", "performer"],
       author: ["author", "writer", "composer"],
@@ -92,7 +91,6 @@ export async function POST(request: NextRequest) {
     // Validate required columns
     const requiredColumns = [
       "title",
-      "tone",
       "bpm",
       "originalSinger",
       "author",
@@ -122,35 +120,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Helper function to normalize song key
-    const normalizeSongKey = (key: string): SongKey => {
-      const normalized = key.toString().toUpperCase().trim();
-
-      // Map common key variations
-      const keyMap: { [key: string]: SongKey } = {
-        C: SongKey.C,
-        "C#": SongKey.C_SHARP,
-        DB: SongKey.C_SHARP,
-        D: SongKey.D,
-        "D#": SongKey.D_SHARP,
-        EB: SongKey.D_SHARP,
-        E: SongKey.E,
-        F: SongKey.F,
-        "F#": SongKey.F_SHARP,
-        GB: SongKey.F_SHARP,
-        G: SongKey.G,
-        "G#": SongKey.G_SHARP,
-        AB: SongKey.G_SHARP,
-        A: SongKey.A,
-        "A#": SongKey.A_SHARP,
-        BB: SongKey.A_SHARP,
-        B: SongKey.B,
-        CB: SongKey.B,
-      };
-
-      return keyMap[normalized] || SongKey.C; // Default to C if not found
-    };
-
     // Helper function to normalize song pace
     const normalizeSongPace = (pace: string): SongPace => {
       const normalized = pace.toString().toLowerCase().trim();
@@ -178,7 +147,6 @@ export async function POST(request: NextRequest) {
       try {
         // Extract data from row
         const title = row[columnMap.title!]?.toString().trim();
-        const tone = row[columnMap.tone!]?.toString().trim();
         const bpm = row[columnMap.bpm!];
         const originalSinger = row[columnMap.originalSinger!]
           ?.toString()
@@ -193,11 +161,6 @@ export async function POST(request: NextRequest) {
         // Validate required fields
         if (!title) {
           results.errors.push(`Row ${rowNumber}: Title is required`);
-          continue;
-        }
-
-        if (!tone) {
-          results.errors.push(`Row ${rowNumber}: Tone/Key is required`);
           continue;
         }
 
@@ -250,7 +213,6 @@ export async function POST(request: NextRequest) {
         await prisma.song.create({
           data: {
             title,
-            tone: normalizeSongKey(tone),
             bpm: bpm.toString().trim(),
             originalSinger,
             author,

@@ -61,7 +61,6 @@ export async function PUT(
 
     const {
       title,
-      tone,
       bpm,
       originalSinger,
       author,
@@ -85,7 +84,6 @@ export async function PUT(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {};
     if (title) updateData.title = title;
-    if (tone) updateData.tone = tone;
     if (bpm) updateData.bpm = bpm;
     if (originalSinger) updateData.originalSinger = originalSinger;
     if (author) updateData.author = author;

@@ -1,10 +1,9 @@
 "use client";
 
-import { SONG_KEYS, SONG_PACES } from "@/lib/songs";
+import { SONG_PACES } from "@/lib/songs";
 import { useEffect, useState } from "react";
 
 interface FilterOptions {
-  tones: string[];
   paces: string[];
   styles: string[];
   tags: string[];
@@ -15,7 +14,6 @@ interface SingerSongFiltersProps {
   filters: FilterOptions;
   onFiltersChange: (filters: {
     search: string;
-    tones: string[];
     paces: string[];
     styles: string[];
     tags: string[];
@@ -30,7 +28,6 @@ export default function SingerSongFilters({
   onFiltersChange,
 }: SingerSongFiltersProps) {
   const [search, setSearch] = useState("");
-  const [selectedTones, setSelectedTones] = useState<string[]>([]);
   const [selectedPaces, setSelectedPaces] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -44,7 +41,6 @@ export default function SingerSongFilters({
     const timer = setTimeout(() => {
       onFiltersChange({
         search,
-        tones: selectedTones,
         paces: selectedPaces,
         styles: selectedStyles,
         tags: selectedTags,
@@ -57,7 +53,6 @@ export default function SingerSongFilters({
     return () => clearTimeout(timer);
   }, [
     search,
-    selectedTones,
     selectedPaces,
     selectedStyles,
     selectedTags,
@@ -67,27 +62,21 @@ export default function SingerSongFilters({
     onFiltersChange,
   ]);
 
-  const handleToneToggle = (tone: string) => {
-    setSelectedTones((prev) =>
-      prev.includes(tone) ? prev.filter((t) => t !== tone) : [...prev, tone]
-    );
-  };
-
   const handlePaceToggle = (pace: string) => {
     setSelectedPaces((prev) =>
-      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace]
+      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace],
     );
   };
 
   const handleStyleToggle = (style: string) => {
     setSelectedStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style],
     );
   };
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
@@ -95,13 +84,12 @@ export default function SingerSongFilters({
     setSelectedNatures((prev) =>
       prev.includes(nature)
         ? prev.filter((n) => n !== nature)
-        : [...prev, nature]
+        : [...prev, nature],
     );
   };
 
   const clearAllFilters = () => {
     setSearch("");
-    setSelectedTones([]);
     setSelectedPaces([]);
     setSelectedStyles([]);
     setSelectedTags([]);
@@ -112,7 +100,6 @@ export default function SingerSongFilters({
 
   const hasActiveFilters =
     search ||
-    selectedTones.length > 0 ||
     selectedPaces.length > 0 ||
     selectedStyles.length > 0 ||
     selectedTags.length > 0 ||
@@ -145,8 +132,7 @@ export default function SingerSongFilters({
           <span>Filters</span>
           {hasActiveFilters && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
-              {selectedTones.length +
-                selectedPaces.length +
+              {selectedPaces.length +
                 selectedStyles.length +
                 selectedTags.length +
                 selectedNatures.length +
@@ -267,28 +253,6 @@ export default function SingerSongFilters({
                     No preference
                   </span>
                 </label>
-              </div>
-            </div>
-
-            {/* Tone Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Key ({selectedTones.length} selected)
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {SONG_KEYS.map((keyOption) => (
-                  <label key={keyOption.value} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedTones.includes(keyOption.value)}
-                      onChange={() => handleToneToggle(keyOption.value)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      {keyOption.label}
-                    </span>
-                  </label>
-                ))}
               </div>
             </div>
 

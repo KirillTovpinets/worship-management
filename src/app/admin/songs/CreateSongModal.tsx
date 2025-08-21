@@ -1,8 +1,8 @@
 "use client";
 
 import { WModal } from "@/components/ui/WModal";
-import { SONG_KEYS, SONG_PACES } from "@/lib/songs";
-import { SongKey, SongPace } from "@prisma/client";
+import { SONG_PACES } from "@/lib/songs";
+import { SongPace } from "@prisma/client";
 import { useState } from "react";
 import { useModalContext } from "./contexts/ModalContext";
 import { useSongsManagementContext } from "./contexts/SongsManagementContext";
@@ -14,7 +14,6 @@ export const CreateSongModal = () => {
 
   const [formData, setFormData] = useState<SongFormData>({
     title: "",
-    tone: "C" as SongKey,
     bpm: "",
     originalSinger: "",
     author: "",
@@ -60,28 +59,6 @@ export const CreateSongModal = () => {
                 }
                 className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Тональность *
-              </label>
-              <select
-                required
-                value={formData.tone}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    tone: e.target.value as SongKey,
-                  })
-                }
-                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                {SONG_KEYS.map((keyOption) => (
-                  <option key={keyOption.value} value={keyOption.value}>
-                    {keyOption.label}
-                  </option>
-                ))}
-              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">

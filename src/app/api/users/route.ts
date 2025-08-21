@@ -19,7 +19,6 @@ export async function GET() {
         name: true,
         email: true,
         role: true,
-        key: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -33,7 +32,7 @@ export async function GET() {
     console.error("Error fetching users:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -47,18 +46,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {
-      name,
-      email,
-      password,
-      role = "SINGER",
-      key,
-    } = await request.json();
+    const { name, email, password, role = "SINGER" } = await request.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -70,7 +63,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -84,14 +77,12 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         role: role as "ADMIN" | "SINGER",
-        key: key || null,
       },
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
-        key: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -102,13 +93,13 @@ export async function POST(request: NextRequest) {
         message: "User created successfully",
         user,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
