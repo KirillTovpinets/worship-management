@@ -15,10 +15,6 @@ interface SongsManagementContextType {
   handleCreateSong: (
     formData: import("../types").SongFormData,
   ) => Promise<{ success: boolean; error?: string }>;
-  handleUpdateSong: (
-    songId: string,
-    formData: import("../types").SongFormData,
-  ) => Promise<{ success: boolean; error?: string }>;
   clearMessages: () => void;
   refreshData: () => void;
 }

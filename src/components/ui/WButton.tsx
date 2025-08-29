@@ -5,11 +5,12 @@ interface WButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | "primary"
     | "secondary"
+    | "tertiary"
     | "danger"
     | "success"
     | "warning"
     | "ghost";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "none";
   className?: string;
 }
 
@@ -28,6 +29,8 @@ export const WButton = ({
       "bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500",
     secondary:
       "bg-gray-300 hover:bg-gray-400 text-gray-800 focus:ring-gray-500",
+    tertiary:
+      "hover:text-indigo-600 hover:underline bg-transparent text-indigo-600 focus:outline-none",
     danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500",
     success: "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500",
     warning:
@@ -40,6 +43,7 @@ export const WButton = ({
     sm: "px-3 py-1.5 text-xs",
     md: "px-4 py-2 text-sm",
     lg: "px-6 py-3 text-base",
+    none: "",
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;

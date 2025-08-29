@@ -27,3 +27,9 @@ export const getKeyValue = (label: string): SongKey | null => {
   );
   return keyOption ? keyOption.value : null;
 };
+
+export const SONG_PACES: { value: string; label: string }[] = [
+  { value: "SLOW", label: "Медленный" },
+  { value: "MEDIUM", label: "Средний" },
+  { value: "FAST", label: "Быстрый" },
+];

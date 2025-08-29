@@ -1,10 +1,41 @@
 "use client";
 
+import { useImportLyrics } from "@/app/admin/songs/hooks/useImportLyrics";
+import { WButton, WTextarea } from "@/components/ui";
+import { useEffect, useState } from "react";
 import { useModalContext } from "../contexts/ModalContext";
+import { Song } from "../types";
 
-export const LyricsModal = () => {
-  const { showLyricsModal, viewingLyrics, closeLyricsModal } =
+interface LyricsModalProps {
+  song: Song;
+}
+
+export const LyricsModal = ({ song }: LyricsModalProps) => {
+  const { showLyricsModal, viewingLyrics, closeLyricsModal, setViewingLyrics } =
     useModalContext();
+
+  const { isUploading, handleFileUpload, uploadLyrics } = useImportLyrics(
+    song,
+    (text) => {
+      setViewingLyrics(text);
+      closeLyricsModal();
+    },
+  );
+
+  const [changedLyrics, setChangedLyrics] = useState(viewingLyrics);
+
+  useEffect(() => {
+    setChangedLyrics(viewingLyrics);
+  }, [viewingLyrics]);
+
+  const handleSaveChanges = async () => {
+    await uploadLyrics(changedLyrics);
+  };
+
+  const handleCloseLyricsModal = () => {
+    closeLyricsModal();
+    setViewingLyrics("");
+  };
 
   if (!showLyricsModal) return null;
 
@@ -34,14 +65,31 @@ export const LyricsModal = () => {
               </svg>
             </button>
           </div>
-          <div className="bg-gray-50 p-4 rounded-md">
-            <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
-              {viewingLyrics}
-            </pre>
+          <div className="flex justify-end my-6">
+            <div>
+              <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200">
+                {isUploading ? "Загрузка..." : "Выбрать файл"}
+                <input
+                  disabled={isUploading}
+                  type="file"
+                  accept=".txt"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+              </label>
+            </div>
           </div>
-          <div className="flex justify-end mt-6">
+          <WTextarea
+            value={changedLyrics}
+            onChange={(e) => setChangedLyrics(e.target.value)}
+            rows={15}
+          />
+          <div className="flex justify-end mt-6 gap-2">
+            <WButton variant="primary" onClick={handleSaveChanges}>
+              Сохранить
+            </WButton>
             <button
-              onClick={closeLyricsModal}
+              onClick={handleCloseLyricsModal}
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
             >
               Закрыть

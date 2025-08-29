@@ -27,5 +27,11 @@ export { WBadge, WBadgeGroup } from "./WBadge";
 // Alert components
 export { WAlert, WAlertDescription, WAlertTitle } from "./WAlert";
 
+// Toast components
+export { NotificationProvider, useNotification } from "./NotificationContext";
+export { ToastDemo } from "./ToastDemo";
+export { WToast } from "./WToast";
+export { WToaster } from "./WToaster";
+
 // Card components
 export { WCard, WCardContent, WCardFooter, WCardHeader } from "./WCard";

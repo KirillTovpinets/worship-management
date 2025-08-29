@@ -14,23 +14,42 @@ interface Singer {
   role: string;
 }
 
-interface AdaptationsModalProps {
-  availableSingers: Singer[];
-}
-
 export default function AdaptationsModal({
-  availableSingers,
-}: AdaptationsModalProps) {
-  const {
-    viewingAdaptations,
-    showAdaptationsModal,
-    closeAdaptationsModal,
-    onDataRefresh,
-  } = useModalContext();
+  onRefresh,
+}: {
+  onRefresh: () => void;
+}) {
+  const { viewingAdaptations, showAdaptationsModal, closeAdaptationsModal } =
+    useModalContext();
+
+  const [availableSingers, setAvailableSingers] = useState<
+    Array<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    }>
+  >([]);
+
+  // Fetch available singers
+  useEffect(() => {
+    const fetchSingers = async () => {
+      try {
+        const response = await fetch("/api/users/singers");
+        if (response.ok) {
+          const singers = await response.json();
+          setAvailableSingers(singers);
+        }
+      } catch (error) {
+        console.error("Failed to fetch singers:", error);
+      }
+    };
+
+    fetchSingers();
+  }, []);
   const {
     adaptations,
     loading,
-    error,
     fetchAdaptations,
     addAdaptation,
     updateAdaptation,
@@ -64,10 +83,7 @@ export default function AdaptationsModal({
       await addAdaptation(selectedSinger, selectedKey as SongKey);
       setSelectedSinger("");
       setSelectedKey("");
-      // Refresh the table data
-      if (onDataRefresh) {
-        onDataRefresh();
-      }
+      onRefresh();
     } catch (err) {
       console.error("Failed to add adaptation:", err);
     } finally {
@@ -78,10 +94,7 @@ export default function AdaptationsModal({
   const handleUpdateKey = async (singerId: string, newKey: SongKey) => {
     try {
       await updateAdaptation(singerId, newKey);
-      // Refresh the table data
-      if (onDataRefresh) {
-        onDataRefresh();
-      }
+      onRefresh();
     } catch (err) {
       console.error("Failed to update adaptation:", err);
     }
@@ -91,10 +104,7 @@ export default function AdaptationsModal({
     if (confirm("Are you sure you want to remove this adaptation?")) {
       try {
         await deleteAdaptation(singerId);
-        // Refresh the table data
-        if (onDataRefresh) {
-          onDataRefresh();
-        }
+        onRefresh();
       } catch (err) {
         console.error("Failed to delete adaptation:", err);
       }
@@ -111,12 +121,6 @@ export default function AdaptationsModal({
 
         {/* Content */}
         <div className="">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
-
           {/* Current Adaptations */}
           <div className="mb-6">
             {loading ? (

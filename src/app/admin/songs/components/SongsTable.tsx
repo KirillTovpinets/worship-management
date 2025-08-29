@@ -2,7 +2,6 @@
 
 import {
   WBadge,
-  WBadgeGroup,
   WIconButton,
   WSortableTh,
   WTable,
@@ -14,25 +13,21 @@ import {
   WTr,
 } from "@/components/ui";
 import { getKeyLabel } from "@/lib/songs";
-import { useSearchParams } from "next/navigation";
-import { useModalContext } from "../contexts/ModalContext";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Song } from "../types";
 
 interface SongsTableProps {
   songs: Song[];
   onDeleteSong: (songId: string) => void;
   onSort: (sortKey: string) => void;
-  onOpenAdaptations: (song: Song) => void;
 }
 
 export const SongsTable = ({
   songs,
   onDeleteSong,
   onSort,
-  onOpenAdaptations,
 }: SongsTableProps) => {
-  const { openEditModal, openLyricsModal, openHistoryModal } =
-    useModalContext();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const currentSortBy = searchParams.get("sortBy");
@@ -40,6 +35,18 @@ export const SongsTable = ({
   const sortConfig = currentSortBy
     ? { key: currentSortBy, direction: currentSortOrder }
     : null;
+
+  const handleRowClick = (song: Song) => {
+    router.push(`/admin/songs/${song.id}`);
+  };
+  let maxAdoptations = 0;
+  let songWithMaxAdoptations: Song | null = null;
+  for (const song of songs) {
+    if (song.adaptations?.length && song.adaptations?.length > maxAdoptations) {
+      maxAdoptations = song.adaptations?.length;
+      songWithMaxAdoptations = song;
+    }
+  }
 
   return (
     <WTableContainer>
@@ -53,7 +60,10 @@ export const SongsTable = ({
             >
               Название
             </WSortableTh>
-            <WTh>Тональности</WTh>
+            {songWithMaxAdoptations &&
+              songWithMaxAdoptations.adaptations?.map((adaptation) => (
+                <WTh key={adaptation.id}>{adaptation.singer.name}</WTh>
+              ))}
             <WSortableTh sortKey="bpm" currentSort={sortConfig} onSort={onSort}>
               BPM
             </WSortableTh>
@@ -80,33 +90,39 @@ export const SongsTable = ({
         </WThead>
         <WTbody>
           {songs.map((song: Song) => (
-            <WTr key={song.id} className="hover:bg-gray-50">
+            <WTr
+              key={song.id}
+              className="hover:bg-gray-50"
+              onClick={() => handleRowClick(song)}
+            >
               <WTd>
                 <div className="text-sm font-medium text-gray-900">
                   {song.title}
                 </div>
               </WTd>
-              <WTd>
-                {song.adaptations && song.adaptations.length > 0 ? (
-                  <div className="flex items-center space-x-2">
-                    <WBadgeGroup>
-                      {song.adaptations.slice(0, 3).map((adaptation) => (
-                        <WBadge key={adaptation.id} variant="success" size="sm">
-                          {adaptation.singer.name} (
-                          {getKeyLabel(adaptation.key)})
+              {songWithMaxAdoptations &&
+                songWithMaxAdoptations.adaptations &&
+                songWithMaxAdoptations.adaptations.length > 0 &&
+                songWithMaxAdoptations.adaptations.map((adaptation, index) => {
+                  const songAdoptation = song.adaptations?.find(
+                    (a, i) => i === index,
+                  );
+                  if (songAdoptation) {
+                    return (
+                      <WTd key={`${song.id}-${adaptation.id}`}>
+                        <WBadge variant="success" size="sm">
+                          {getKeyLabel(adaptation.key)}
                         </WBadge>
-                      ))}
-                    </WBadgeGroup>
-                    {song.adaptations.length > 3 && (
-                      <span className="text-xs text-gray-500">
-                        +{song.adaptations.length - 3} ещё
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <span className="text-gray-400 text-xs">Нет адаптаций</span>
-                )}
-              </WTd>
+                      </WTd>
+                    );
+                  } else {
+                    return (
+                      <WTd key={`${song.id}-${adaptation.id}-empty`}>
+                        <span className="text-gray-400 text-xs">Нет</span>
+                      </WTd>
+                    );
+                  }
+                })}
               <WTd>{song.bpm}</WTd>
               <WTd>{song.nature}</WTd>
               <WTd>{song.originalSinger}</WTd>
@@ -116,93 +132,6 @@ export const SongsTable = ({
 
               <WTd className="text-sm font-medium">
                 <div className="flex items-center space-x-2">
-                  <WIconButton
-                    variant="success"
-                    onClick={() => onOpenAdaptations(song)}
-                    title={`Адаптации (${song.adaptations?.length || 0})`}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                  </WIconButton>
-                  <WIconButton
-                    variant="primary"
-                    onClick={() => openLyricsModal(song.lyrics || "")}
-                    title={
-                      song.lyrics ? "Посмотреть текст" : "Текст отсутствует"
-                    }
-                    disabled={!song.lyrics}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                  </WIconButton>
-                  <WIconButton
-                    variant="info"
-                    onClick={() => openHistoryModal(song)}
-                    title={`История исполнения${
-                      song.events && song.events.length > 0
-                        ? `(${song.events.length})`
-                        : ""
-                    }`}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </WIconButton>
-                  <WIconButton
-                    variant="primary"
-                    onClick={() => openEditModal(song)}
-                    title="Редактировать"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                  </WIconButton>
                   <WIconButton
                     variant="danger"
                     onClick={() => onDeleteSong(song.id)}

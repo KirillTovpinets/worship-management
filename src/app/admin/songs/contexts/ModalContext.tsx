@@ -36,6 +36,7 @@ interface ModalContextType {
   closeImportModal: () => void;
   closeAdaptationsModal: () => void;
   setDataRefreshCallback: (callback: () => void) => void;
+  setViewingLyrics: (lyrics: string) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -146,6 +147,7 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
     closeImportModal,
     closeAdaptationsModal,
     setDataRefreshCallback,
+    setViewingLyrics,
   };
 
   return (

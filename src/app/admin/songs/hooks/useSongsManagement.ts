@@ -138,36 +138,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
     }
   };
 
-  const handleUpdateSong = async (songId: string, formData: SongFormData) => {
-    setError("");
-    setSuccess("");
-
-    try {
-      const response = await fetch(`/api/songs/${songId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess("Песня обновлена успешно");
-        // Refresh the page to show updated data
-        router.push(`/admin/songs?${searchParams.toString()}`);
-        return { success: true };
-      } else {
-        setError(data.error || "Не удалось обновить песню");
-        return { success: false, error: data.error };
-      }
-    } catch {
-      setError("Ошибка обновления песны");
-      return { success: false, error: "Ошибка обновления песны" };
-    }
-  };
-
   const handleSort = useCallback(
     (sortKey: string) => {
       const currentSortBy = searchParams.get("sortBy");
@@ -209,7 +179,6 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
     handleSort,
     handleDeleteSong,
     handleCreateSong,
-    handleUpdateSong,
     clearMessages,
     refreshData,
   };
