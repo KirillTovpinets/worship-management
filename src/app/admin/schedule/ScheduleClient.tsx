@@ -386,7 +386,7 @@ export default function ScheduleClient({
                             {event.title}
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {new Date(event.date).toLocaleDateString("en-US", {
+                            {new Date(event.date).toLocaleDateString("ru-RU", {
                               weekday: "long",
                               year: "numeric",
                               month: "long",
