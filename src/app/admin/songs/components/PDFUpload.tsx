@@ -2,6 +2,7 @@
 
 import { PDFModal } from "@/app/admin/songs/components/PDFModal";
 import { WButton } from "@/components/ui";
+import { ListMusicIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePDFUpload } from "../hooks/usePDFUpload";
 
@@ -40,9 +41,10 @@ export const PDFUpload = ({ songId, songTitle }: PDFUploadProps) => {
   if (pdfUrl) {
     return (
       <>
-        <div className="flex flex-col items-center space-y-3">
+        <div className="flex justify-start items-center space-y-3 ">
           <WButton variant="tertiary" size="none" onClick={handleViewPDF}>
-            Файл аккордов {isPDFModalOpen}
+            <ListMusicIcon className="mr-2" />
+            Аккорды {isPDFModalOpen}
           </WButton>
         </div>
         <PDFModal
@@ -57,9 +59,10 @@ export const PDFUpload = ({ songId, songTitle }: PDFUploadProps) => {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-3">
+    <div className="flex justify-start items-center space-y-3">
       {!isUploading && (
         <label className="cursor-pointer inline-flex items-center px-4 py-2 text-indigo-600 font-medium rounded-md transition-colors duration-200">
+          <ListMusicIcon className="mr-2" />
           {isUploading ? "Загрузка..." : "Загрузить аккорды"}
           <input
             type="file"

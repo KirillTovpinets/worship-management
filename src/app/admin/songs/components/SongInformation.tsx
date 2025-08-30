@@ -5,6 +5,7 @@ import { useAdaptations } from "@/app/admin/songs/hooks/useAdaptations";
 import { WBadge, WButton } from "@/components/ui";
 import { getKeyLabel } from "@/lib/keys";
 import { Song } from "../types";
+import { PDFUpload } from "@/app/admin/songs/components/PDFUpload";
 
 interface SongInformationProps {
   song: Song;
@@ -24,7 +25,7 @@ export default function SongInformation({ song }: SongInformationProps) {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 max-w-sm">
       <div>
         <div className="flex gap-2 items-center justify-between">
           <h3 className="text-lg font-medium text-gray-900">
@@ -40,10 +41,20 @@ export default function SongInformation({ song }: SongInformationProps) {
           <p>Исполнитель: {song.originalSinger}</p>
           <p>Автор: {song.author}</p>
           <p>Стиль: {song.style}</p>
-          <p>Теги: {song.tags}</p>
+          <p>
+            Теги:{" "}
+            <div className="flex gap-2 flex-wrap">
+              {song.tags.split(" / ").map((tag) => (
+                <WBadge key={tag} variant="info">
+                  {tag}
+                </WBadge>
+              ))}
+            </div>
+          </p>
           <p>Характер песни: {song.nature}</p>
         </div>
       </div>
+      <PDFUpload songId={song.id} songTitle={song.title} />
       {/* Adaptations Section */}
       <div>
         <div className="flex gap-2 items-center justify-between">

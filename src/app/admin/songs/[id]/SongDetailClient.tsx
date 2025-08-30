@@ -2,7 +2,6 @@
 
 import { LyricsModal } from "@/app/admin/songs/components/LyricsModal";
 import { MP3Upload } from "@/app/admin/songs/components/MP3Upload";
-import { PDFUpload } from "@/app/admin/songs/components/PDFUpload";
 import {
   ModalProvider,
   useModalContext,
@@ -67,7 +66,6 @@ function SongDetailClientComponent({ song }: SongDetailClientProps) {
                       Редактировать
                     </WButton>
                   )}
-                  <PDFUpload songId={song.id} songTitle={song.title} />
                 </div>
               </div>
               {song.lyrics && (

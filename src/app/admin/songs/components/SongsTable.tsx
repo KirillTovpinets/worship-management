@@ -128,7 +128,15 @@ export const SongsTable = ({
               <WTd>{song.originalSinger}</WTd>
               <WTd>{song.author}</WTd>
               <WTd>{song.style}</WTd>
-              <WTd>{song.tags}</WTd>
+              <WTd>
+                <div className="flex gap-2 flex-wrap">
+                  {song.tags.split(" / ").map((tag) => (
+                    <WBadge key={tag} variant="info">
+                      {tag}
+                    </WBadge>
+                  ))}
+                </div>
+              </WTd>
 
               <WTd className="text-sm font-medium">
                 <div className="flex items-center space-x-2">
