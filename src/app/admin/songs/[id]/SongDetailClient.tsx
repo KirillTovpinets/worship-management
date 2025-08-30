@@ -1,7 +1,8 @@
 "use client";
 
 import { LyricsModal } from "@/app/admin/songs/components/LyricsModal";
-import { MP3Upload } from "@/app/admin/songs/components/MP3Upload";
+import { MultipleMP3Upload } from "@/app/admin/songs/components/MultipleMP3Upload";
+import { MultiplePDFUpload } from "@/app/admin/songs/components/MultiplePDFUpload";
 import {
   ModalProvider,
   useModalContext,
@@ -145,9 +146,17 @@ function SongDetailClientComponent({ song }: SongDetailClientProps) {
           {/* MP3 Section */}
           <div className="border-t pt-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">
-              Аудио файл
+              Аудио файлы
             </h3>
-            <MP3Upload songId={song.id} songTitle={song.title} />
+            <MultipleMP3Upload songId={song.id} songTitle={song.title} />
+          </div>
+
+          {/* PDF Section */}
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              PDF файлы (аккорды и тексты)
+            </h3>
+            <MultiplePDFUpload songId={song.id} songTitle={song.title} />
           </div>
         </div>
       </div>

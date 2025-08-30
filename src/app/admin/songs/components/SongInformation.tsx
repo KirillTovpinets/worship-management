@@ -5,7 +5,6 @@ import { useAdaptations } from "@/app/admin/songs/hooks/useAdaptations";
 import { WBadge, WButton } from "@/components/ui";
 import { getKeyLabel } from "@/lib/keys";
 import { Song } from "../types";
-import { PDFUpload } from "@/app/admin/songs/components/PDFUpload";
 
 interface SongInformationProps {
   song: Song;
@@ -54,7 +53,6 @@ export default function SongInformation({ song }: SongInformationProps) {
           <p>Характер песни: {song.nature}</p>
         </div>
       </div>
-      <PDFUpload songId={song.id} songTitle={song.title} />
       {/* Adaptations Section */}
       <div>
         <div className="flex gap-2 items-center justify-between">
