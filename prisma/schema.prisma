@@ -125,7 +125,9 @@ enum UserRole {
 
 enum SongKey {
   C
+  Cm
   C_SHARP
+  C_SHARP_M
   D
   D_SHARP
   E
@@ -136,6 +138,18 @@ enum SongKey {
   A
   A_SHARP
   B
+  Dm
+  Eb
+  Ebm
+  Em
+  Fm
+  F_SHARP_M
+  Gm
+  G_SHARP_M
+  Am
+  Bb
+  Bbm
+
 }
 
 enum SongPace {

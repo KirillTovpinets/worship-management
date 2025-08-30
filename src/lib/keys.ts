@@ -2,17 +2,27 @@ import { SongKey } from "@prisma/client";
 
 export const SONG_KEYS: { value: SongKey; label: string }[] = [
   { value: "C", label: "C" },
-  { value: "C_SHARP", label: "Db" },
+  { value: "Cm", label: "Cm" },
+  { value: "C_SHARP", label: "C#" },
+  { value: "C_SHARP_M", label: "C#m" },
   { value: "D", label: "D" },
-  { value: "D_SHARP", label: "Eb" },
+  { value: "Dm", label: "Dm" },
+  { value: "Eb", label: "Eb" },
+  { value: "Ebm", label: "Ebm" },
   { value: "E", label: "E" },
+  { value: "Em", label: "Em" },
   { value: "F", label: "F" },
-  { value: "F_SHARP", label: "Gb" },
+  { value: "Fm", label: "Fm" },
+  { value: "F_SHARP", label: "F#" },
+  { value: "F_SHARP_M", label: "F#m" },
   { value: "G", label: "G" },
-  { value: "G_SHARP", label: "Ab" },
+  { value: "Gm", label: "Gm" },
+  { value: "G_SHARP", label: "G#" },
+  { value: "G_SHARP_M", label: "G#m" },
   { value: "A", label: "A" },
-  { value: "A_SHARP", label: "Bb" },
-  { value: "B", label: "B" },
+  { value: "Am", label: "Am" },
+  { value: "Bb", label: "Bb" },
+  { value: "Bbm", label: "Bbm" },
 ];
 
 export const getKeyLabel = (key: SongKey | null | undefined): string => {
