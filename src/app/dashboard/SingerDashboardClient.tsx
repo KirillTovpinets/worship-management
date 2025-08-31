@@ -2,8 +2,6 @@
 
 import Pagination from "@/components/Pagination";
 import SingerSongFilters from "@/components/SingerSongFilters";
-import { getPaceLabel } from "@/lib/songs";
-import { SongPace } from "@prisma/client";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -29,7 +27,6 @@ interface Song {
   bpm: string;
   originalSinger: string;
   author: string;
-  pace: SongPace;
   style: string;
   tags: string;
   nature: string;
@@ -69,7 +66,6 @@ interface PaginationData {
 }
 
 interface FilterOptions {
-  paces: string[];
   styles: string[];
   tags: string[];
   natures: string[];
@@ -82,7 +78,6 @@ interface SingerDashboardClientProps {
   filters: FilterOptions;
   currentFilters: {
     search: string;
-    paces: string[];
     styles: string[];
     tags: string[];
     natures: string[];
@@ -114,7 +109,6 @@ export default function SingerDashboardClient({
 
       // Clear existing filter params
       params.delete("search");
-      params.delete("paces");
       params.delete("styles");
       params.delete("tags");
       params.delete("natures");
@@ -127,7 +121,6 @@ export default function SingerDashboardClient({
         params.set("search", newFilters.search);
       }
 
-      newFilters.paces.forEach((pace) => params.append("paces", pace));
       newFilters.styles.forEach((style) => params.append("styles", style));
       newFilters.tags.forEach((tag) => params.append("tags", tag));
       newFilters.natures.forEach((nature) => params.append("natures", nature));
@@ -238,7 +231,6 @@ export default function SingerDashboardClient({
                           </h3>
                           <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                             <span>BPM: {song.bpm}</span>
-                            <span>Pace: {getPaceLabel(song.pace)}</span>
                           </div>
                           <div className="mt-1 text-sm text-gray-500">
                             <span>Original Singer: {song.originalSinger}</span>
@@ -416,12 +408,6 @@ export default function SingerDashboardClient({
                       <span className="font-medium text-gray-600">BPM:</span>
                       <span className="ml-2 text-gray-900">
                         {viewingSongHistory.bpm}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-600">Pace:</span>
-                      <span className="ml-2 text-gray-900">
-                        {getPaceLabel(viewingSongHistory.pace)}
                       </span>
                     </div>
                     <div>

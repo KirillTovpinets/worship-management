@@ -1,6 +1,5 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SongPace } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
@@ -65,7 +64,6 @@ export async function POST(request: NextRequest) {
       bpm: ["bpm", "tempo", "beats per minute"],
       originalSinger: ["original singer", "singer", "artist", "performer"],
       author: ["author", "writer", "composer"],
-      pace: ["pace", "speed", "tempo category"],
       style: ["style", "genre", "category"],
       tags: ["tags", "tag", "keywords"],
       nature: ["nature", "mood", "feeling"],
@@ -94,7 +92,6 @@ export async function POST(request: NextRequest) {
       "bpm",
       "originalSinger",
       "author",
-      "pace",
       "style",
       "tags",
       "nature",
@@ -120,19 +117,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Helper function to normalize song pace
-    const normalizeSongPace = (pace: string): SongPace => {
-      const normalized = pace.toString().toLowerCase().trim();
-
-      if (normalized.includes("slow")) return SongPace.SLOW;
-      if (normalized.includes("moderate") || normalized.includes("medium"))
-        return SongPace.MODERATE;
-      if (normalized.includes("fast") || normalized.includes("quick"))
-        return SongPace.FAST;
-
-      return SongPace.MODERATE; // Default
-    };
-
     // Process data rows
     const results = {
       success: 0,
@@ -152,7 +136,6 @@ export async function POST(request: NextRequest) {
           ?.toString()
           .trim();
         const author = row[columnMap.author!]?.toString().trim();
-        const pace = row[columnMap.pace!]?.toString().trim();
         const style = row[columnMap.style!]?.toString().trim();
         const tags = row[columnMap.tags!]?.toString().trim();
         const nature = row[columnMap.nature!]?.toString().trim();
@@ -176,11 +159,6 @@ export async function POST(request: NextRequest) {
 
         if (!author) {
           results.errors.push(`Row ${rowNumber}: Author is required`);
-          continue;
-        }
-
-        if (!pace) {
-          results.errors.push(`Row ${rowNumber}: Pace is required`);
           continue;
         }
 
@@ -216,7 +194,6 @@ export async function POST(request: NextRequest) {
             bpm: bpm.toString().trim(),
             originalSinger,
             author,
-            pace: normalizeSongPace(pace),
             style,
             tags,
             nature,

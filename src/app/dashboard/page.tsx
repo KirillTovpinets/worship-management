@@ -9,7 +9,6 @@ interface SingerDashboardProps {
     page?: string;
     limit?: string;
     search?: string;
-    paces?: string | string[];
     styles?: string | string[];
     tags?: string | string[];
     natures?: string | string[];
@@ -36,11 +35,6 @@ export default async function SingerDashboard({
   const page = parseInt(searchParams.page || "1");
   const limit = parseInt(searchParams.limit || "10");
   const search = searchParams.search || "";
-  const paces = Array.isArray(searchParams.paces)
-    ? searchParams.paces
-    : searchParams.paces
-    ? [searchParams.paces]
-    : [];
   const styles = Array.isArray(searchParams.styles)
     ? searchParams.styles
     : searchParams.styles
@@ -75,13 +69,6 @@ export default async function SingerDashboard({
     where.title = {
       contains: search,
       mode: "insensitive",
-    };
-  }
-
-  // Filter by pace
-  if (paces.length > 0) {
-    where.pace = {
-      in: paces,
     };
   }
 
@@ -179,12 +166,6 @@ export default async function SingerDashboard({
     };
   });
 
-  const uniquePaces = await prisma.song.findMany({
-    select: { pace: true },
-    distinct: ["pace"],
-    orderBy: { pace: "asc" },
-  });
-
   const uniqueStyles = await prisma.song.findMany({
     select: { style: true },
     distinct: ["style"],
@@ -225,7 +206,6 @@ export default async function SingerDashboard({
   };
 
   const filters = {
-    paces: uniquePaces.map((p) => p.pace),
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
     natures: uniqueNatures,
@@ -233,7 +213,6 @@ export default async function SingerDashboard({
 
   const currentFilters = {
     search,
-    paces,
     styles,
     tags,
     natures,

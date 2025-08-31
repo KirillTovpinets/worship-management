@@ -19,11 +19,9 @@ interface SongFiltersProps {
   };
   onFiltersChange: (filters: {
     search: string;
-
     styles: string[];
     tags: string[];
     natures: string[];
-
     hasEvents?: boolean;
   }) => void;
 }

@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
-    const paces = searchParams.getAll("paces");
     const styles = searchParams.getAll("styles");
     const tags = searchParams.getAll("tags");
     const natures = searchParams.getAll("natures");
@@ -37,13 +36,6 @@ export async function GET(request: NextRequest) {
       where.title = {
         contains: search,
         mode: "insensitive",
-      };
-    }
-
-    // Filter by pace
-    if (paces.length > 0) {
-      where.pace = {
-        in: paces,
       };
     }
 
@@ -129,13 +121,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get unique values for filter options
-    const uniquePaces = await prisma.song.findMany({
-      select: { pace: true },
-      distinct: ["pace"],
-      orderBy: { pace: "asc" },
-    });
-
     const uniqueStyles = await prisma.song.findMany({
       select: { style: true },
       distinct: ["style"],
@@ -188,7 +173,6 @@ export async function GET(request: NextRequest) {
         hasPrevPage: page > 1,
       },
       filters: {
-        paces: uniquePaces.map((p) => p.pace),
         styles: uniqueStyles.map((s) => s.style),
         tags: uniqueTags,
         natures: uniqueNatures,
@@ -215,24 +199,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {
-      title,
-      bpm,
-      originalSinger,
-      author,
-      pace,
-      style,
-      tags,
-      nature,
-      lyrics,
-    } = await request.json();
+    const { title, bpm, originalSinger, author, style, tags, nature, lyrics } =
+      await request.json();
 
     if (
       !title ||
       !bpm ||
       !originalSinger ||
       !author ||
-      !pace ||
       !style ||
       !tags ||
       !nature
@@ -250,7 +224,6 @@ export async function POST(request: NextRequest) {
         bpm,
         originalSinger,
         author,
-        pace,
         style,
         tags,
         nature,

@@ -1,10 +1,8 @@
 "use client";
 
-import { SONG_PACES } from "@/lib/songs";
 import { useEffect, useState } from "react";
 
 interface FilterOptions {
-  paces: string[];
   styles: string[];
   tags: string[];
   natures: string[];
@@ -14,7 +12,6 @@ interface SingerSongFiltersProps {
   filters: FilterOptions;
   onFiltersChange: (filters: {
     search: string;
-    paces: string[];
     styles: string[];
     tags: string[];
     natures: string[];
@@ -28,7 +25,6 @@ export default function SingerSongFilters({
   onFiltersChange,
 }: SingerSongFiltersProps) {
   const [search, setSearch] = useState("");
-  const [selectedPaces, setSelectedPaces] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedNatures, setSelectedNatures] = useState<string[]>([]);
@@ -41,7 +37,6 @@ export default function SingerSongFilters({
     const timer = setTimeout(() => {
       onFiltersChange({
         search,
-        paces: selectedPaces,
         styles: selectedStyles,
         tags: selectedTags,
         natures: selectedNatures,
@@ -53,7 +48,6 @@ export default function SingerSongFilters({
     return () => clearTimeout(timer);
   }, [
     search,
-    selectedPaces,
     selectedStyles,
     selectedTags,
     selectedNatures,
@@ -61,12 +55,6 @@ export default function SingerSongFilters({
     mySongs,
     onFiltersChange,
   ]);
-
-  const handlePaceToggle = (pace: string) => {
-    setSelectedPaces((prev) =>
-      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace],
-    );
-  };
 
   const handleStyleToggle = (style: string) => {
     setSelectedStyles((prev) =>
@@ -90,7 +78,6 @@ export default function SingerSongFilters({
 
   const clearAllFilters = () => {
     setSearch("");
-    setSelectedPaces([]);
     setSelectedStyles([]);
     setSelectedTags([]);
     setSelectedNatures([]);
@@ -100,7 +87,6 @@ export default function SingerSongFilters({
 
   const hasActiveFilters =
     search ||
-    selectedPaces.length > 0 ||
     selectedStyles.length > 0 ||
     selectedTags.length > 0 ||
     selectedNatures.length > 0 ||
@@ -132,7 +118,7 @@ export default function SingerSongFilters({
           <span>Filters</span>
           {hasActiveFilters && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
-              {selectedPaces.length +
+              {selectedStyles.length +
                 selectedStyles.length +
                 selectedTags.length +
                 selectedNatures.length +
@@ -253,28 +239,6 @@ export default function SingerSongFilters({
                     No preference
                   </span>
                 </label>
-              </div>
-            </div>
-
-            {/* Pace Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pace ({selectedPaces.length} selected)
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {SONG_PACES.map((paceOption) => (
-                  <label key={paceOption.value} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedPaces.includes(paceOption.value)}
-                      onChange={() => handlePaceToggle(paceOption.value)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      {paceOption.label}
-                    </span>
-                  </label>
-                ))}
               </div>
             </div>
 

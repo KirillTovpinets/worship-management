@@ -1,4 +1,4 @@
-import { SongKey, SongPace } from "@prisma/client";
+import { SongKey } from "@prisma/client";
 
 export interface Song {
   id: string;
@@ -6,7 +6,6 @@ export interface Song {
   bpm: string;
   originalSinger: string;
   author: string;
-  pace: SongPace;
   style: string;
   tags: string;
   nature: string;
@@ -62,7 +61,6 @@ export interface PaginationData {
 }
 
 export interface FilterOptions {
-  paces: string[];
   styles: string[];
   tags: string[];
   natures: string[];
@@ -70,7 +68,6 @@ export interface FilterOptions {
 
 export interface CurrentFilters {
   search: string;
-  paces: string[];
   styles: string[];
   tags: string[];
   natures: string[];
@@ -91,7 +88,6 @@ export interface SongFormData {
   bpm: string;
   originalSinger: string;
   author: string;
-  pace: SongPace;
   style: string;
   tags: string;
   nature: string;

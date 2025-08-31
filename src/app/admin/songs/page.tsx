@@ -6,7 +6,6 @@ interface SongsPageProps {
     page?: string;
     limit?: string;
     search?: string;
-    paces?: string | string[];
     styles?: string | string[];
     tags?: string | string[];
     natures?: string | string[];
@@ -25,11 +24,6 @@ export default async function SongsPage({
   const page = parseInt(searchParams.page || "1");
   const limit = parseInt(searchParams.limit || "10");
   const search = searchParams.search || "";
-  const paces = Array.isArray(searchParams.paces)
-    ? searchParams.paces
-    : searchParams.paces
-    ? [searchParams.paces]
-    : [];
   const styles = Array.isArray(searchParams.styles)
     ? searchParams.styles
     : searchParams.styles
@@ -62,13 +56,6 @@ export default async function SongsPage({
   if (search) {
     where.title = {
       contains: search,
-    };
-  }
-
-  // Filter by pace
-  if (paces.length > 0) {
-    where.pace = {
-      in: paces,
     };
   }
 
@@ -168,13 +155,6 @@ export default async function SongsPage({
     } as any,
   });
 
-  // Get unique values for filter options
-  const uniquePaces = await prisma.song.findMany({
-    select: { pace: true },
-    distinct: ["pace"],
-    orderBy: { pace: "asc" },
-  });
-
   const uniqueStyles = await prisma.song.findMany({
     select: { style: true },
     distinct: ["style"],
@@ -215,7 +195,6 @@ export default async function SongsPage({
   };
 
   const filters = {
-    paces: uniquePaces.map((p) => p.pace),
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
     natures: uniqueNatures,
@@ -232,7 +211,6 @@ export default async function SongsPage({
       filters={filters}
       currentFilters={{
         search,
-        paces,
         styles,
         tags,
         natures,

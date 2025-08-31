@@ -2,8 +2,6 @@
 
 import { Song } from "@/app/admin/songs/types";
 import Pagination from "@/components/Pagination";
-import { getPaceLabel } from "@/lib/songs";
-import { SongPace } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -30,7 +28,6 @@ interface SongFormData {
   bpm: string;
   originalSinger: string;
   author: string;
-  pace: SongPace;
   style: string;
   tags: string;
   nature: string;
@@ -127,7 +124,6 @@ export default function SongsList({
       bpm: song.bpm,
       originalSinger: song.originalSinger,
       author: song.author,
-      pace: song.pace,
       style: song.style,
       tags: song.tags,
       nature: song.nature,
@@ -140,7 +136,6 @@ export default function SongsList({
     bpm: "",
     originalSinger: "",
     author: "",
-    pace: "MODERATE",
     style: "",
     tags: "",
     nature: "",
@@ -170,7 +165,6 @@ export default function SongsList({
                       </h3>
                       <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                         <span>BPM: {song.bpm}</span>
-                        <span>Pace: {getPaceLabel(song.pace)}</span>
                       </div>
                       <div className="mt-1 text-sm text-gray-500">
                         <span>Original Singer: {song.originalSinger}</span>

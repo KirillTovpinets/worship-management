@@ -63,7 +63,6 @@ model Song {
   bpm            String
   originalSinger String
   author         String
-  pace           SongPace
   style          String
   tags           String
   nature         String
@@ -151,10 +150,4 @@ enum SongKey {
   Bb
   Bbm
 
-}
-
-enum SongPace {
-  SLOW
-  MODERATE
-  FAST
 }

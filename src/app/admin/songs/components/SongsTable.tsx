@@ -12,7 +12,7 @@ import {
   WThead,
   WTr,
 } from "@/components/ui";
-import { getKeyLabel } from "@/lib/songs";
+import { getKeyLabel } from "@/lib/keys";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Song } from "../types";
 

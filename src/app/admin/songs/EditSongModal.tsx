@@ -3,7 +3,6 @@
 import { useSongEntity } from "@/app/admin/songs/hooks/useSongEntity";
 import { WTextarea } from "@/components/ui";
 import { WModal } from "@/components/ui/WModal";
-import { SongPace } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useModalContext } from "./contexts/ModalContext";
 import { SongFormData } from "./types";
@@ -17,7 +16,6 @@ export const EditSongModal = () => {
     bpm: "",
     originalSinger: "",
     author: "",
-    pace: "MODERATE" as SongPace,
     style: "",
     tags: "",
     nature: "",
@@ -32,7 +30,6 @@ export const EditSongModal = () => {
         bpm: editingSong.bpm,
         originalSinger: editingSong.originalSinger,
         author: editingSong.author,
-        pace: editingSong.pace,
         style: editingSong.style,
         tags: editingSong.tags,
         nature: editingSong.nature,
@@ -75,20 +72,6 @@ export const EditSongModal = () => {
                 value={formData.title}
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
-                }
-                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Темп *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.bpm}
-                onChange={(e) =>
-                  setFormData({ ...formData, bpm: e.target.value })
                 }
                 className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />

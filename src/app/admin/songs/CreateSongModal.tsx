@@ -1,8 +1,6 @@
 "use client";
 
 import { WModal } from "@/components/ui/WModal";
-import { SONG_PACES } from "@/lib/songs";
-import { SongPace } from "@prisma/client";
 import { useState } from "react";
 import { useModalContext } from "./contexts/ModalContext";
 import { useSongsManagementContext } from "./contexts/SongsManagementContext";
@@ -17,7 +15,6 @@ export const CreateSongModal = () => {
     bpm: "",
     originalSinger: "",
     author: "",
-    pace: "MODERATE" as SongPace,
     style: "",
     tags: "",
     nature: "",
@@ -105,28 +102,6 @@ export const CreateSongModal = () => {
                 }
                 className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Темп *
-              </label>
-              <select
-                required
-                value={formData.pace}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    pace: e.target.value as SongPace,
-                  })
-                }
-                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                {SONG_PACES.map((paceOption) => (
-                  <option key={paceOption.value} value={paceOption.value}>
-                    {paceOption.label}
-                  </option>
-                ))}
-              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
