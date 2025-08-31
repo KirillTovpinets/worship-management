@@ -1,10 +1,8 @@
 "use client";
 
-import { SONG_PACES } from "@/lib/songs";
 import { useEffect, useState } from "react";
 
 interface FilterOptions {
-  paces: string[];
   styles: string[];
   tags: string[];
   natures: string[];
@@ -14,7 +12,6 @@ interface SongFiltersProps {
   filters: FilterOptions;
   currentFilters: {
     search: string;
-    paces: string[];
     styles: string[];
     tags: string[];
     natures: string[];
@@ -22,7 +19,7 @@ interface SongFiltersProps {
   };
   onFiltersChange: (filters: {
     search: string;
-    paces: string[];
+
     styles: string[];
     tags: string[];
     natures: string[];
@@ -37,9 +34,7 @@ export default function SongFilters({
   onFiltersChange,
 }: SongFiltersProps) {
   const [search, setSearch] = useState(currentFilters.search);
-  const [selectedPaces, setSelectedPaces] = useState<string[]>(
-    currentFilters.paces,
-  );
+
   const [selectedStyles, setSelectedStyles] = useState<string[]>(
     currentFilters.styles,
   );
@@ -60,7 +55,7 @@ export default function SongFilters({
     const timer = setTimeout(() => {
       onFiltersChange({
         search,
-        paces: selectedPaces,
+
         styles: selectedStyles,
         tags: selectedTags,
         natures: selectedNatures,
@@ -71,7 +66,7 @@ export default function SongFilters({
     return () => clearTimeout(timer);
   }, [
     search,
-    selectedPaces,
+
     selectedStyles,
     selectedTags,
     selectedNatures,
@@ -83,7 +78,7 @@ export default function SongFilters({
   useEffect(() => {
     onFiltersChange({
       search,
-      paces: selectedPaces,
+
       styles: selectedStyles,
       tags: selectedTags,
       natures: selectedNatures,
@@ -91,19 +86,13 @@ export default function SongFilters({
     });
   }, [
     search,
-    selectedPaces,
+
     selectedStyles,
     selectedTags,
     selectedNatures,
     hasEvents,
     onFiltersChange,
   ]);
-
-  const handlePaceToggle = (pace: string) => {
-    setSelectedPaces((prev) =>
-      prev.includes(pace) ? prev.filter((p) => p !== pace) : [...prev, pace],
-    );
-  };
 
   const handleStyleToggle = (style: string) => {
     setSelectedStyles((prev) =>
@@ -127,7 +116,6 @@ export default function SongFilters({
 
   const clearAllFilters = () => {
     setSearch("");
-    setSelectedPaces([]);
     setSelectedStyles([]);
     setSelectedTags([]);
     setSelectedNatures([]);
@@ -136,7 +124,6 @@ export default function SongFilters({
 
   const hasActiveFilters =
     search ||
-    selectedPaces.length > 0 ||
     selectedStyles.length > 0 ||
     selectedTags.length > 0 ||
     selectedNatures.length > 0 ||
@@ -167,7 +154,7 @@ export default function SongFilters({
           <span>Фильтры</span>
           {hasActiveFilters && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
-              {selectedPaces.length +
+              {selectedStyles.length +
                 selectedStyles.length +
                 selectedTags.length +
                 selectedNatures.length +
@@ -242,28 +229,6 @@ export default function SongFilters({
                 placeholder="Поиск песен..."
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
-            </div>
-
-            {/* Pace Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ритм ({selectedPaces.length} выбрано)
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {SONG_PACES.map((paceOption) => (
-                  <label key={paceOption.value} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedPaces.includes(paceOption.value)}
-                      onChange={() => handlePaceToggle(paceOption.value)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      {paceOption.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
             </div>
 
             {/* Style Filter */}
@@ -363,7 +328,7 @@ export default function SongFilters({
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-sm text-gray-700">
-                    Ниразу не исполненные
+                    Ни разу не исполненные
                   </span>
                 </label>
                 <label className="flex items-center">
