@@ -8,7 +8,6 @@ export default withAuth(
     const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
     const isDashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
 
-    console.log("--------------------------", token);
     // Protect admin routes - only allow ADMIN role
     if (isAdminPage) {
       if (!isAuth) {
@@ -21,7 +20,7 @@ export default withAuth(
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }
-    console.log("--------------------------", isAdminPage);
+
     // Protect dashboard routes - require authentication
     if (isDashboardPage) {
       if (!isAuth) {

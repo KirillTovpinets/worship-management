@@ -7,13 +7,9 @@ import { useMultipleMP3Upload } from "../hooks/useMultipleMP3Upload";
 
 interface MultipleMP3UploadProps {
   songId: string;
-  songTitle: string;
 }
 
-export const MultipleMP3Upload = ({
-  songId,
-  songTitle,
-}: MultipleMP3UploadProps) => {
+export const MultipleMP3Upload = ({ songId }: MultipleMP3UploadProps) => {
   const {
     isUploading,
     isLoading,

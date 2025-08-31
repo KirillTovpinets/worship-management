@@ -2,9 +2,9 @@
 
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function SignIn() {
+function SignInContent() {
   const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -150,5 +150,19 @@ export default function SignIn() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-xl">Loading...</div>
+        </div>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   );
 }

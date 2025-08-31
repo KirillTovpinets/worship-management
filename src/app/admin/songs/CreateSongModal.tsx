@@ -22,6 +22,7 @@ export const CreateSongModal = () => {
     tags: "",
     nature: "",
     lyrics: "",
+    notes: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

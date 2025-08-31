@@ -7,13 +7,6 @@ import { useEffect, useState } from "react";
 import { useModalContext } from "../contexts/ModalContext";
 import { useAdaptations } from "../hooks/useAdaptations";
 
-interface Singer {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
 export default function AdaptationsModal({
   onRefresh,
 }: {

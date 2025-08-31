@@ -1,8 +1,9 @@
 "use client";
 
+import { Song } from "@/app/admin/songs/types";
 import Pagination from "@/components/Pagination";
 import { getPaceLabel } from "@/lib/songs";
-import type { Song, SongPace } from "@prisma/client";
+import { SongPace } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -130,7 +131,7 @@ export default function SongsList({
       style: song.style,
       tags: song.tags,
       nature: song.nature,
-      notes: song.notes,
+      notes: song.notes || "",
     });
   };
 
@@ -181,7 +182,7 @@ export default function SongsList({
                         <span className="mx-2">•</span>
                         <span>Nature: {song.nature}</span>
                         <span className="mx-2">•</span>
-                        <span>Notes: {song.notes}</span>
+                        <span>Notes: {song.notes || ""}</span>
                       </div>
                       {song.tags && (
                         <div className="mt-1 text-sm text-gray-500">

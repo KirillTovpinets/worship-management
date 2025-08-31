@@ -8,8 +8,8 @@ import {
   useModalContext,
 } from "@/app/admin/songs/contexts/ModalContext";
 import { useImportLyrics } from "@/app/admin/songs/hooks/useImportLyrics";
+import { Song } from "@/app/admin/songs/types";
 import { WButton } from "@/components/ui";
-import { Song } from "@prisma/client";
 import SongInformation from "../components/SongInformation";
 
 interface Singer {
@@ -142,7 +142,7 @@ function SongDetailClientComponent({ song }: SongDetailClientProps) {
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               Аудио файлы
             </h3>
-            <MultipleMP3Upload songId={song.id} songTitle={song.title} />
+            <MultipleMP3Upload songId={song.id} />
           </div>
 
           {/* PDF Section */}

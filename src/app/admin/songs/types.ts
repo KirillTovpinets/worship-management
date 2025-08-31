@@ -10,6 +10,7 @@ export interface Song {
   style: string;
   tags: string;
   nature: string;
+  notes?: string;
   lyrics?: string | null;
   createdAt: Date;
   updatedAt: Date;

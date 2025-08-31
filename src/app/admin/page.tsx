@@ -1,11 +1,7 @@
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 import AdminDashboardClient from "./AdminDashboardClient";
 
 export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions);
-
   // Fetch statistics from database
   const [
     totalUsers,
