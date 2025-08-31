@@ -41,7 +41,7 @@ export const useAdaptations = (songId: string | null) => {
     } finally {
       setLoading(false);
     }
-  }, [songId, toast]);
+  }, [songId]);
 
   useEffect(() => {
     fetchAdaptations();
