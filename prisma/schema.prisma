@@ -68,6 +68,7 @@ model Song {
   tags           String
   nature         String
   lyrics         String?
+  notes          String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   events         EventSong[]

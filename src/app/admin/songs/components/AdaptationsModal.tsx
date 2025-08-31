@@ -147,10 +147,7 @@ export default function AdaptationsModal({
                           {adaptation.singer.email}
                         </p>
                       </div>
-                      <WBadge variant="default">
-                        {SONG_KEYS.find((k) => k.value === adaptation.key)
-                          ?.label || adaptation.key}
-                      </WBadge>
+                      <WBadge variant="default">{adaptation.key}</WBadge>
                     </div>
                     <div className="flex items-center space-x-2">
                       <select

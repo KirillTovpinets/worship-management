@@ -1,7 +1,4 @@
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import ScheduleClient from "./ScheduleClient";
 
 interface SchedulePageProps {
@@ -15,23 +12,14 @@ export default async function SchedulePage({
   searchParams: params,
 }: SchedulePageProps) {
   const searchParams = await params;
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/auth/signin");
-  }
-
-  if (session.user?.role !== "ADMIN") {
-    redirect("/dashboard");
-  }
 
   // Parse year and month from search params or use current date
   const currentDate = new Date();
   const year = parseInt(
-    searchParams.year || currentDate.getFullYear().toString()
+    searchParams.year || currentDate.getFullYear().toString(),
   );
   const month = parseInt(
-    searchParams.month || (currentDate.getMonth() + 1).toString()
+    searchParams.month || (currentDate.getMonth() + 1).toString(),
   );
 
   // Get events for the specified month

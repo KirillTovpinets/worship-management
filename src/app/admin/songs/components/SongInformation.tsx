@@ -51,6 +51,7 @@ export default function SongInformation({ song }: SongInformationProps) {
             </div>
           </p>
           <p>Характер песни: {song.nature}</p>
+          <p>Заметки: {song.notes}</p>
         </div>
       </div>
       {/* Adaptations Section */}

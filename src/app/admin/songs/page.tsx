@@ -1,7 +1,4 @@
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import SongsClient from "./SongsClient";
 
 interface SongsPageProps {
@@ -23,15 +20,6 @@ export default async function SongsPage({
   searchParams: params,
 }: SongsPageProps) {
   const searchParams = await params;
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/auth/signin");
-  }
-
-  if (session.user?.role !== "ADMIN") {
-    redirect("/dashboard");
-  }
 
   // Parse search parameters
   const page = parseInt(searchParams.page || "1");
@@ -126,7 +114,7 @@ export default async function SongsPage({
   const totalCount = await prisma.song.count({ where });
 
   // Build orderBy clause
-  let orderBy: { [key: string]: "asc" | "desc" } = { createdAt: "desc" }; // default sorting
+  let orderBy: { [key: string]: "asc" | "desc" } = { title: "asc" }; // default sorting
 
   if (sortBy) {
     switch (sortBy) {
@@ -143,7 +131,7 @@ export default async function SongsPage({
         orderBy = { author: sortOrder };
         break;
       default:
-        orderBy = { createdAt: "desc" };
+        orderBy = { title: "asc" };
     }
   }
 

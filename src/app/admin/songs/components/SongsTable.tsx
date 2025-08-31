@@ -84,6 +84,7 @@ export const SongsTable = ({
             </WSortableTh>
             <WTh>Стиль</WTh>
             <WTh>Теги</WTh>
+            <WTh>Заметки</WTh>
 
             <WTh>Действия</WTh>
           </WTr>
@@ -109,15 +110,15 @@ export const SongsTable = ({
                   );
                   if (songAdoptation) {
                     return (
-                      <WTd key={`${song.id}-${adaptation.id}`}>
+                      <WTd key={`${song.id}-${songAdoptation.id}`}>
                         <WBadge variant="success" size="sm">
-                          {getKeyLabel(adaptation.key)}
+                          {getKeyLabel(songAdoptation.key)}
                         </WBadge>
                       </WTd>
                     );
                   } else {
                     return (
-                      <WTd key={`${song.id}-${adaptation.id}-empty`}>
+                      <WTd key={`${song.id}-empty`}>
                         <span className="text-gray-400 text-xs">Нет</span>
                       </WTd>
                     );
@@ -137,7 +138,7 @@ export const SongsTable = ({
                   ))}
                 </div>
               </WTd>
-
+              <WTd>{song.notes}</WTd>
               <WTd className="text-sm font-medium">
                 <div className="flex items-center space-x-2">
                   <WIconButton

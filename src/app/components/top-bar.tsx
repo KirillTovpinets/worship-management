@@ -1,13 +1,13 @@
 "use client";
 
 import { signOut, useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const TopBar = () => {
   const { data: session } = useSession();
   const router = useRouter();
   if (!session) {
-    redirect("/auth/signin");
+    null;
   }
 
   return (
@@ -27,7 +27,7 @@ export const TopBar = () => {
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-700">
-              Добро пожаловать, {session.user?.name} ({session.user?.role})
+              Добро пожаловать, {session?.user?.name} ({session?.user?.role})
             </span>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}

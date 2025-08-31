@@ -1,7 +1,7 @@
 "use client";
 
 import { getSession, signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SignIn() {
@@ -11,19 +11,29 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   useEffect(() => {
     if (status === "loading") return;
 
     if (session) {
-      // Redirect authenticated users to their appropriate dashboard
+      // Redirect authenticated users to their appropriate dashboard or callback URL
       if (session.user?.role === "ADMIN") {
-        router.push("/admin");
+        if (callbackUrl && callbackUrl.startsWith("/admin")) {
+          router.push(callbackUrl);
+        } else {
+          router.push("/admin");
+        }
       } else {
-        router.push("/dashboard");
+        if (callbackUrl && callbackUrl.startsWith("/dashboard")) {
+          router.push(callbackUrl);
+        } else {
+          router.push("/dashboard");
+        }
       }
     }
-  }, [session, status, router]);
+  }, [session, status, router, callbackUrl]);
 
   if (status === "loading") {
     return (
@@ -54,9 +64,17 @@ export default function SignIn() {
       } else {
         const session = await getSession();
         if (session?.user?.role === "ADMIN") {
-          router.push("/admin");
+          if (callbackUrl && callbackUrl.startsWith("/admin")) {
+            router.push(callbackUrl);
+          } else {
+            router.push("/admin");
+          }
         } else {
-          router.push("/dashboard");
+          if (callbackUrl && callbackUrl.startsWith("/dashboard")) {
+            router.push(callbackUrl);
+          } else {
+            router.push("/dashboard");
+          }
         }
       }
     } catch {

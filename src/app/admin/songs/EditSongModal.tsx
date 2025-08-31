@@ -1,6 +1,7 @@
 "use client";
 
 import { useSongEntity } from "@/app/admin/songs/hooks/useSongEntity";
+import { WTextarea } from "@/components/ui";
 import { WModal } from "@/components/ui/WModal";
 import { SongPace } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ export const EditSongModal = () => {
     tags: "",
     nature: "",
     lyrics: "",
+    notes: "",
   });
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export const EditSongModal = () => {
         tags: editingSong.tags,
         nature: editingSong.nature,
         lyrics: editingSong.lyrics || "",
+        notes: editingSong.notes || "",
       });
     }
   }, [editingSong]);
@@ -161,6 +164,19 @@ export const EditSongModal = () => {
                 value={formData.nature}
                 onChange={(e) =>
                   setFormData({ ...formData, nature: e.target.value })
+                }
+                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Заметки
+              </label>
+              <WTextarea
+                placeholder="e.g., upbeat, reflective, powerful"
+                value={formData.notes}
+                onChange={(e) =>
+                  setFormData({ ...formData, notes: e.target.value })
                 }
                 className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />

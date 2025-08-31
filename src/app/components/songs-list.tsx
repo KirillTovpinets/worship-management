@@ -33,6 +33,7 @@ interface SongFormData {
   style: string;
   tags: string;
   nature: string;
+  notes: string;
 }
 
 export default function SongsList({
@@ -129,6 +130,7 @@ export default function SongsList({
       style: song.style,
       tags: song.tags,
       nature: song.nature,
+      notes: song.notes,
     });
   };
 
@@ -141,6 +143,7 @@ export default function SongsList({
     style: "",
     tags: "",
     nature: "",
+    notes: "",
   } as SongFormData);
 
   if (status === "loading" || loading) {
@@ -177,6 +180,8 @@ export default function SongsList({
                         <span>Style: {song.style}</span>
                         <span className="mx-2">•</span>
                         <span>Nature: {song.nature}</span>
+                        <span className="mx-2">•</span>
+                        <span>Notes: {song.notes}</span>
                       </div>
                       {song.tags && (
                         <div className="mt-1 text-sm text-gray-500">

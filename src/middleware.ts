@@ -8,20 +8,27 @@ export default withAuth(
     const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
     const isDashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
 
+    console.log("--------------------------", token);
     // Protect admin routes - only allow ADMIN role
     if (isAdminPage) {
       if (!isAuth) {
-        return NextResponse.redirect(new URL("/auth/signin", req.url));
+        // Preserve the original URL for redirect after signin
+        const signInUrl = new URL("/auth/signin", req.url);
+        signInUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
+        return NextResponse.redirect(signInUrl);
       }
       if (token?.role !== "ADMIN") {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }
-
+    console.log("--------------------------", isAdminPage);
     // Protect dashboard routes - require authentication
     if (isDashboardPage) {
       if (!isAuth) {
-        return NextResponse.redirect(new URL("/auth/signin", req.url));
+        // Preserve the original URL for redirect after signin
+        const signInUrl = new URL("/auth/signin", req.url);
+        signInUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
+        return NextResponse.redirect(signInUrl);
       }
     }
 
@@ -31,7 +38,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ token }) => !!token,
     },
-  }
+  },
 );
 
 export const config = {

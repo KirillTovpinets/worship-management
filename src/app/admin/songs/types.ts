@@ -95,4 +95,5 @@ export interface SongFormData {
   tags: string;
   nature: string;
   lyrics: string;
+  notes: string;
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 
 interface Statistics {
@@ -32,7 +31,6 @@ interface RecentActivity {
 }
 
 interface AdminDashboardClientProps {
-  session: Session;
   statistics: Statistics;
   recentActivity: RecentActivity;
 }

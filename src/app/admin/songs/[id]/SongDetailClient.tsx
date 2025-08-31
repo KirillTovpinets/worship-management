@@ -10,7 +10,6 @@ import {
 import { useImportLyrics } from "@/app/admin/songs/hooks/useImportLyrics";
 import { WButton } from "@/components/ui";
 import { Song } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import SongInformation from "../components/SongInformation";
 
 interface Singer {
@@ -26,14 +25,9 @@ interface SongDetailClientProps {
 }
 
 function SongDetailClientComponent({ song }: SongDetailClientProps) {
-  const { data: session } = useSession();
   const { openLyricsModal } = useModalContext();
 
   const { isUploading, handleFileUpload } = useImportLyrics(song, () => {});
-
-  if (!session || session.user?.role !== "ADMIN") {
-    return <div>Доступ запрещен</div>;
-  }
 
   const handleEditLyrics = () => {
     if (!song.lyrics) return;

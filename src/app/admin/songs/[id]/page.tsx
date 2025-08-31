@@ -1,7 +1,5 @@
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import SongDetailClient from "./SongDetailClient";
 
 interface SongDetailPageProps {
@@ -9,12 +7,6 @@ interface SongDetailPageProps {
 }
 
 export default async function SongDetailPage({ params }: SongDetailPageProps) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/auth/signin");
-  }
-
   const { id } = await params;
 
   // Fetch the song with all related data
