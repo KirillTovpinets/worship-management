@@ -272,19 +272,19 @@ export default function DashboardClient({
               </h3>
               <div className="mt-4 space-y-3">
                 <button
-                  onClick={() => router.push("/users")}
+                  onClick={() => router.push("/dashboard/users")}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Управление пользователями
                 </button>
                 <button
-                  onClick={() => router.push("/songs")}
+                  onClick={() => router.push("/dashboard/songs")}
                   className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Управление песнями
                 </button>
                 <button
-                  onClick={() => router.push("/schedule")}
+                  onClick={() => router.push("/dashboard/schedule")}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Планирование события
