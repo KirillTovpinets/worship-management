@@ -1,7 +1,9 @@
+import SongsClient from "@/app/dashboard/songs/SongsClient";
 import { prisma } from "@/lib/prisma";
-import SongsClient from "./SongsClient";
 
-interface SongsPageProps {
+export default async function SongsView({
+  searchParams: params,
+}: {
   searchParams: Promise<{
     page?: string;
     limit?: string;
@@ -13,11 +15,7 @@ interface SongsPageProps {
     sortBy?: string;
     sortOrder?: string;
   }>;
-}
-
-export default async function SongsPage({
-  searchParams: params,
-}: SongsPageProps) {
+}) {
   const searchParams = await params;
 
   // Parse search parameters
@@ -68,6 +66,7 @@ export default async function SongsPage({
 
   // Filter by tags (partial match)
   if (tags.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     where.OR = tags.map((tag) => ({
       tags: {
         contains: tag,
@@ -77,6 +76,7 @@ export default async function SongsPage({
 
   // Filter by nature (partial match)
   if (natures.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     where.OR = natures.map((nature) => ({
       nature: {
         contains: nature,

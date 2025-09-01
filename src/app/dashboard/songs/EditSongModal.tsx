@@ -1,6 +1,6 @@
 "use client";
 
-import { useSongEntity } from "@/app/admin/songs/hooks/useSongEntity";
+import { useSongEntity } from "@/app/dashboard/songs/hooks/useSongEntity";
 import { WTextarea } from "@/components/ui";
 import { WModal } from "@/components/ui/WModal";
 import { useEffect, useState } from "react";

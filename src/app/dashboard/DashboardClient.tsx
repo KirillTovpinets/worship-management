@@ -49,7 +49,7 @@ const isPastEvent = (date: Date) => {
   return new Date(date) < new Date();
 };
 
-export default function AdminDashboardClient({
+export default function DashboardClient({
   statistics,
   recentActivity,
 }: AdminDashboardClientProps) {
@@ -272,19 +272,19 @@ export default function AdminDashboardClient({
               </h3>
               <div className="mt-4 space-y-3">
                 <button
-                  onClick={() => router.push("/admin/users")}
+                  onClick={() => router.push("/users")}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Управление пользователями
                 </button>
                 <button
-                  onClick={() => router.push("/admin/songs")}
+                  onClick={() => router.push("/songs")}
                   className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Управление песнями
                 </button>
                 <button
-                  onClick={() => router.push("/admin/schedule")}
+                  onClick={() => router.push("/schedule")}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Планирование события

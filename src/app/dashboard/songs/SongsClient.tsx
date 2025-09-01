@@ -1,5 +1,6 @@
 "use client";
 
+import RoleGuard from "@/app/components/role-guard";
 import Pagination from "@/components/Pagination";
 import SongFilters from "@/components/SongFilters";
 import { useSession } from "next-auth/react";
@@ -20,7 +21,7 @@ const SongsClientContent = ({
   filters,
   currentFilters,
 }: SongsClientProps) => {
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   const { openCreateModal, openImportModal, setDataRefreshCallback } =
     useModalContext();
@@ -40,8 +41,18 @@ const SongsClientContent = ({
     setDataRefreshCallback(refreshData);
   }, [setDataRefreshCallback, refreshData]);
 
-  if (!session || session.user?.role !== "ADMIN") {
-    return null;
+  // Show loading state while session is loading
+  if (status === "loading") {
+    return (
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-0">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-2 text-gray-600">Loading...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -50,20 +61,22 @@ const SongsClientContent = ({
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Список песен</h2>
-            <div className="flex space-x-3">
-              <button
-                onClick={openImportModal}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                Импорт из Excel
-              </button>
-              <button
-                onClick={openCreateModal}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                Добавить песню
-              </button>
-            </div>
+            <RoleGuard>
+              <div className="flex space-x-3">
+                <button
+                  onClick={openImportModal}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Импорт из Excel
+                </button>
+                <button
+                  onClick={openCreateModal}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Добавить песню
+                </button>
+              </div>
+            </RoleGuard>
           </div>
 
           {error && (

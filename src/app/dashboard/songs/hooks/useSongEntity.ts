@@ -1,4 +1,4 @@
-import { SongFormData } from "@/app/admin/songs/types";
+import { SongFormData } from "@/app/dashboard/songs/types";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../../../hooks/useToast";
 

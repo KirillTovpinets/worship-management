@@ -1,6 +1,6 @@
 "use client";
 
-import { useImportLyrics } from "@/app/admin/songs/hooks/useImportLyrics";
+import { useImportLyrics } from "@/app/dashboard/songs/hooks/useImportLyrics";
 import { WButton, WTextarea } from "@/components/ui";
 import { useEffect, useState } from "react";
 import { useModalContext } from "../contexts/ModalContext";

@@ -43,7 +43,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
         params.set("sortOrder", newFilters.sortOrder);
       }
 
-      router.push(`/admin/songs?${params.toString()}`, { scroll: false });
+      router.push(`/dashboard/songs?${params.toString()}`, { scroll: false });
     },
     [searchParams, router],
   );
@@ -51,7 +51,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", page.toString());
-    const url = `/admin/songs?${params.toString()}`;
+    const url = `/dashboard/songs?${params.toString()}`;
     router.push(url, { scroll: false });
   };
 
@@ -59,7 +59,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("limit", pageSize.toString());
     params.delete("page"); // Reset to page 1 when changing page size
-    const url = `/admin/songs?${params.toString()}`;
+    const url = `/dashboard/songs?${params.toString()}`;
     router.push(url, { scroll: false });
   };
 
@@ -94,7 +94,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       if (response.ok) {
         setSuccess("Песня удалена успешно");
         // Refresh the page to show updated data
-        router.push(`/admin/songs?${searchParams.toString()}`);
+        router.push(`/dashboard/songs?${searchParams.toString()}`);
       } else {
         const data = await response.json();
         setError(data.error || "Не удалось удалить песню");
@@ -122,7 +122,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       if (response.ok) {
         setSuccess("Песня создана успешно");
         // Refresh the page to show new data
-        router.push(`/admin/songs?${searchParams.toString()}`);
+        router.push(`/dashboard/songs?${searchParams.toString()}`);
         return { success: true };
       } else {
         setError(data.error || "Не удалось создать песню");
@@ -151,7 +151,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
       params.set("sortOrder", newSortOrder);
       params.delete("page"); // Reset to page 1 when sorting changes
 
-      router.push(`/admin/songs?${params.toString()}`, { scroll: false });
+      router.push(`/dashboard/songs?${params.toString()}`, { scroll: false });
     },
     [searchParams, router],
   );
@@ -163,7 +163,7 @@ export const useSongsManagement = (currentFilters: CurrentFilters) => {
 
   const refreshData = () => {
     // Refresh the page to reload data
-    router.push(`/admin/songs?${searchParams.toString()}`);
+    router.push(`/dashboard/songs?${searchParams.toString()}`);
   };
 
   return {

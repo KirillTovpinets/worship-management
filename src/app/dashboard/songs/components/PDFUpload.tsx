@@ -1,6 +1,6 @@
 "use client";
 
-import { PDFModal } from "@/app/admin/songs/components/PDFModal";
+import { PDFModal } from "@/app/dashboard/songs/components/PDFModal";
 import { WButton } from "@/components/ui";
 import { ListMusicIcon } from "lucide-react";
 import { useEffect, useState } from "react";

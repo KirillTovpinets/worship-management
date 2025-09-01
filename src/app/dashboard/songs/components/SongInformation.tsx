@@ -1,7 +1,8 @@
-import AdaptationsModal from "@/app/admin/songs/components/AdaptationsModal";
-import { useModalContext } from "@/app/admin/songs/contexts/ModalContext";
-import { EditSongModal } from "@/app/admin/songs/EditSongModal";
-import { useAdaptations } from "@/app/admin/songs/hooks/useAdaptations";
+import RoleGuard from "@/app/components/role-guard";
+import AdaptationsModal from "@/app/dashboard/songs/components/AdaptationsModal";
+import { useModalContext } from "@/app/dashboard/songs/contexts/ModalContext";
+import { EditSongModal } from "@/app/dashboard/songs/EditSongModal";
+import { useAdaptations } from "@/app/dashboard/songs/hooks/useAdaptations";
 import { WBadge, WButton } from "@/components/ui";
 import { getKeyLabel } from "@/lib/keys";
 import { Song } from "../types";
@@ -31,9 +32,15 @@ export default function SongInformation({ song }: SongInformationProps) {
             Информация о песне
           </h3>
 
-          <WButton variant="tertiary" size="none" onClick={handleOpenEditModal}>
-            Изменить
-          </WButton>
+          <RoleGuard>
+            <WButton
+              variant="tertiary"
+              size="none"
+              onClick={handleOpenEditModal}
+            >
+              Изменить
+            </WButton>
+          </RoleGuard>
         </div>
         <div className="px-6 py-4">
           <p>BPM: {song.bpm}</p>
@@ -58,13 +65,15 @@ export default function SongInformation({ song }: SongInformationProps) {
       <div>
         <div className="flex gap-2 items-center justify-between">
           <h3 className="text-lg font-medium text-gray-900">Тональности</h3>
-          <WButton
-            variant="tertiary"
-            size="none"
-            onClick={handleOpenAdaptations}
-          >
-            Изменить
-          </WButton>
+          <RoleGuard>
+            <WButton
+              variant="tertiary"
+              size="none"
+              onClick={handleOpenAdaptations}
+            >
+              Изменить
+            </WButton>
+          </RoleGuard>
         </div>
         <div className="px-6 py-4">
           {loading ? (

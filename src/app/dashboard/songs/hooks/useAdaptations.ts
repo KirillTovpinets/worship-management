@@ -41,6 +41,7 @@ export const useAdaptations = (songId: string | null) => {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songId]);
 
   useEffect(() => {

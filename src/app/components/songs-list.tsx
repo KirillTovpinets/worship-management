@@ -1,6 +1,6 @@
 "use client";
 
-import { Song } from "@/app/admin/songs/types";
+import { Song } from "@/app/dashboard/songs/types";
 import Pagination from "@/components/Pagination";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";

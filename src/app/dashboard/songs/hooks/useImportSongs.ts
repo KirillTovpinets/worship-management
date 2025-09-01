@@ -66,7 +66,7 @@ export const useImportSongs = () => {
         setImportResults(data.results);
         if (data.results.success > 0) {
           // Refresh the page to show new data
-          router.push(`/admin/songs?${searchParams.toString()}`);
+          router.push(`/dashboard/songs?${searchParams.toString()}`);
         }
         return { success: true, data };
       } else {

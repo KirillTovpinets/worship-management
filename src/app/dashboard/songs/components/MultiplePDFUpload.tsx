@@ -1,6 +1,7 @@
 "use client";
 
-import { PDFModal } from "@/app/admin/songs/components/PDFModal";
+import RoleGuard from "@/app/components/role-guard";
+import { PDFModal } from "@/app/dashboard/songs/components/PDFModal";
 import { WButton } from "@/components/ui";
 import { Download, Eye, FileText, Upload, X } from "lucide-react";
 import { useState } from "react";
@@ -70,47 +71,58 @@ export const MultiplePDFUpload = ({
   return (
     <>
       <div className="space-y-4">
-        {/* Upload Section */}
-        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors duration-200">
-          <div className="text-center">
-            <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-blue-600" />
-            </div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">
-              Загрузить PDF файлы
-            </h4>
-            <p className="text-gray-600 mb-4">
-              Выберите один или несколько PDF файлов с аккордами и текстами
-              песен
-            </p>
-            <p className="text-sm text-gray-500 mb-4">
-              Поддерживается только PDF формат, максимальный размер каждого
-              файла 10MB
-            </p>
-            <div className="flex flex-col items-center space-y-3">
-              <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200">
-                <Upload className="w-4 h-4 mr-2" />
-                {isUploading ? "Загрузка..." : "Выбрать PDF файлы"}
-                <input
-                  type="file"
-                  accept=".pdf,application/pdf"
-                  multiple
-                  onChange={handleFilesUpload}
-                  className="hidden"
-                  disabled={isUploading}
-                />
-              </label>
-              {isUploading && (
-                <div className="flex items-center space-x-2 text-blue-600">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                  <span className="text-sm">Загрузка файлов...</span>
-                </div>
-              )}
+        <RoleGuard>
+          <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors duration-200">
+            <div className="text-center">
+              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                Загрузить PDF файлы
+              </h4>
+              <p className="text-gray-600 mb-4">
+                Выберите один или несколько PDF файлов с аккордами и текстами
+                песен
+              </p>
+              <p className="text-sm text-gray-500 mb-4">
+                Поддерживается только PDF формат, максимальный размер каждого
+                файла 10MB
+              </p>
+              <div className="flex flex-col items-center space-y-3">
+                <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200">
+                  <Upload className="w-4 h-4 mr-2" />
+                  {isUploading ? "Загрузка..." : "Выбрать PDF файлы"}
+                  <input
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    multiple
+                    onChange={handleFilesUpload}
+                    className="hidden"
+                    disabled={isUploading}
+                  />
+                </label>
+                {isUploading && (
+                  <div className="flex items-center space-x-2 text-blue-600">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    <span className="text-sm">Загрузка файлов...</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </RoleGuard>
 
         {/* Files List */}
+        {pdfFiles.length === 0 && (
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">
+                Нет загруженных PDF файлов
+              </h3>
+            </div>
+          </div>
+        )}
+
         {pdfFiles.length > 0 && (
           <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
@@ -156,15 +168,17 @@ export const MultiplePDFUpload = ({
                     >
                       <Download size={14} />
                     </a>
-                    <WButton
-                      onClick={() => handleDeletePDF(file.id)}
-                      variant="danger"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <X size={14} />
-                      Удалить
-                    </WButton>
+                    <RoleGuard>
+                      <WButton
+                        onClick={() => handleDeletePDF(file.id)}
+                        variant="danger"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <X size={14} />
+                        Удалить
+                      </WButton>
+                    </RoleGuard>
                   </div>
                 </div>
               ))}
