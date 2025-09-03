@@ -95,6 +95,20 @@ export const EditSongModal = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
+                БПМ *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.bpm}
+                onChange={(e) =>
+                  setFormData({ ...formData, bpm: e.target.value })
+                }
+                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
                 Автор *
               </label>
               <input
