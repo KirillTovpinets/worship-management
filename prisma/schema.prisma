@@ -138,6 +138,7 @@ enum SongKey {
   A
   A_SHARP
   B
+  Bm
   Dm
   Eb
   Ebm

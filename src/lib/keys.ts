@@ -21,6 +21,8 @@ export const SONG_KEYS: { value: SongKey; label: string }[] = [
   { value: "G_SHARP_M", label: "G#m" },
   { value: "A", label: "A" },
   { value: "Am", label: "Am" },
+  { value: "B", label: "B" },
+  { value: "Bm", label: "Bm" },
   { value: "Bb", label: "Bb" },
   { value: "Bbm", label: "Bbm" },
 ];
