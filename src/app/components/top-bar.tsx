@@ -1,23 +1,9 @@
 "use client";
 
 import { signOut, useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export const TopBar = () => {
   const { data: session, status } = useSession();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const [showBackButton, setShowBackButton] = useState(false);
-
-  useEffect(() => {
-    if (!session) return;
-    setShowBackButton(
-      (session.user.role !== "ADMIN" && pathname !== "/dashboard/songs") ||
-        (session.user.role === "ADMIN" && pathname !== "/dashboard"),
-    );
-  }, [session, pathname]);
 
   // Show loading state while session is loading
   if (status === "loading") {
@@ -45,14 +31,6 @@ export const TopBar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-4">
-            {showBackButton && (
-              <button
-                onClick={() => router.back()}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                ← Назад
-              </button>
-            )}
             <h1 className="text-xl font-semibold text-gray-900">
               Worship Management - Панель администратора
             </h1>

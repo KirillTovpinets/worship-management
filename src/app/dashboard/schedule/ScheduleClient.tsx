@@ -1,6 +1,7 @@
 "use client";
 
 import { Event, EventSong, Song } from "@prisma/client";
+import { PencilIcon, TrashIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -24,6 +25,8 @@ export default function ScheduleClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showEventModal, setShowEventModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [eventForm, setEventForm] = useState({
     title: "",
@@ -133,7 +136,7 @@ export default function ScheduleClient({
     const params = new URLSearchParams(searchParams);
     params.set("year", newYear.toString());
     params.set("month", newMonth.toString());
-    router.push(`/admin/schedule?${params.toString()}`);
+    router.push(`/dashboard/schedule?${params.toString()}`);
   };
 
   const getEventsForDate = (date: Date) => {
@@ -145,12 +148,36 @@ export default function ScheduleClient({
 
   const openEventModal = (date: Date) => {
     setSelectedDate(date);
+    setIsEditMode(false);
+    setEditingEvent(null);
     setEventForm({
       title: "",
       description: "",
       selectedSongs: [],
     });
     setSongOrder([]);
+    setSongFilters({
+      tags: "",
+      styles: "",
+      nature: "",
+    });
+    setShowEventModal(true);
+  };
+
+  const openEditModal = (
+    event: Event & { songs: (EventSong & { song: Song })[] },
+  ) => {
+    setSelectedDate(new Date(event.date));
+    setIsEditMode(true);
+    setEditingEvent(event);
+    setEventForm({
+      title: event.title,
+      description: event.description || "",
+      selectedSongs: event.songs.map((es) => es.songId),
+    });
+    setSongOrder(
+      event.songs.map((es) => ({ id: es.songId, title: es.song.title })),
+    );
     setSongFilters({
       tags: "",
       styles: "",
@@ -188,6 +215,37 @@ export default function ScheduleClient({
     }
   };
 
+  const handleEditEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEvent || !selectedDate || !eventForm.title) return;
+
+    try {
+      const response = await fetch(`/api/events/${editingEvent.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: eventForm.title,
+          description: eventForm.description,
+          date: selectedDate.toISOString(),
+          songIds: songOrder.map((song) => song.id),
+        }),
+      });
+
+      if (response.ok) {
+        setShowEventModal(false);
+        setIsEditMode(false);
+        setEditingEvent(null);
+        router.refresh();
+      } else {
+        console.error("Failed to update event");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
+  };
+
   const handleDeleteEvent = async (eventId: string) => {
     if (!confirm("Are you sure you want to delete this event?")) return;
 
@@ -214,11 +272,11 @@ export default function ScheduleClient({
           <div className="lg:col-span-2 bg-white rounded-lg shadow">
             {/* Calendar Header */}
             <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4 justify-between">
                 <div className="flex items-center space-x-4">
                   <button
-                    onClick={() => router.push("/admin")}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    onClick={() => navigateMonth("prev")}
+                    className="p-2 text-gray-400 hover:text-gray-600"
                   >
                     <svg
                       className="w-5 h-5"
@@ -230,61 +288,38 @@ export default function ScheduleClient({
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                        d="M15 19l-7-7 7-7"
                       />
                     </svg>
-                    <span className="text-sm font-medium">Назад</span>
                   </button>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => navigateMonth("prev")}
-                      className="p-2 text-gray-400 hover:text-gray-600"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
-                    </button>
-                    <h1 className="text-2xl font-semibold text-gray-900">
-                      {monthNames[currentMonth - 1]} {currentYear}
-                    </h1>
-                    <button
-                      onClick={() => navigateMonth("next")}
-                      className="p-2 text-gray-400 hover:text-gray-600"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                  <h1 className="text-2xl font-semibold text-gray-900">
+                    {monthNames[currentMonth - 1]} {currentYear}
+                  </h1>
                   <button
-                    onClick={() => openEventModal(new Date())}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    onClick={() => navigateMonth("next")}
+                    className="p-2 text-gray-400 hover:text-gray-600"
                   >
-                    Добавить событие
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
                   </button>
                 </div>
+                <button
+                  onClick={() => openEventModal(new Date())}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Добавить событие
+                </button>
               </div>
             </div>
 
@@ -341,10 +376,37 @@ export default function ScheduleClient({
                           {dayEvents.slice(0, 3).map((event) => (
                             <div
                               key={event.id}
-                              className="text-xs bg-indigo-100 text-indigo-800 px-1 py-0.5 rounded truncate cursor-pointer hover:bg-indigo-200"
-                              title={`${event.title} (${event.songs.length} songs)`}
+                              className="text-xs bg-indigo-100 text-indigo-800 px-1 py-0.5 rounded truncate cursor-pointer hover:bg-indigo-200 flex items-center justify-between group"
+                              title={`${event.title} (${event.songs.length} songs) - Нажмите для редактирования`}
                             >
-                              {event.title}
+                              <span
+                                className="truncate cursor-pointer flex-1"
+                                onClick={() => openEditModal(event)}
+                              >
+                                {event.title}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditModal(event);
+                                }}
+                                className="ml-1 opacity-0 group-hover:opacity-100 text-indigo-600 hover:text-indigo-800 transition-opacity flex-shrink-0"
+                                title="Редактировать событие"
+                              >
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                  />
+                                </svg>
+                              </button>
                             </div>
                           ))}
                           {dayEvents.length > 3 && (
@@ -394,12 +456,22 @@ export default function ScheduleClient({
                             })}
                           </p>
                         </div>
-                        <button
-                          onClick={() => handleDeleteEvent(event.id)}
-                          className="text-red-600 hover:text-red-800 text-sm"
-                        >
-                          Удалить
-                        </button>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => openEditModal(event)}
+                            className="text-indigo-600 hover:text-indigo-800 text-sm"
+                          >
+                            <PencilIcon className="w-4 h-4" />
+                            <span className="sr-only">Редактировать</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteEvent(event.id)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                            <span className="sr-only">Удалить</span>
+                          </button>
+                        </div>
                       </div>
                       {event.description && (
                         <p className="text-gray-600 mb-3">
@@ -437,10 +509,35 @@ export default function ScheduleClient({
         <div className="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-10 mx-auto p-6 border w-full max-w-2xl shadow-lg rounded-md bg-white">
             <div className="mt-3">
-              <h3 className="text-xl font-medium text-gray-900 mb-6">
-                Создать событие для {selectedDate.toLocaleDateString()}
-              </h3>
-              <form onSubmit={handleCreateEvent}>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-medium text-gray-900">
+                  {isEditMode ? "Редактировать событие" : "Создать событие"} для{" "}
+                  {selectedDate.toLocaleDateString()}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowEventModal(false);
+                    setIsEditMode(false);
+                    setEditingEvent(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <form onSubmit={isEditMode ? handleEditEvent : handleCreateEvent}>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -771,7 +868,11 @@ export default function ScheduleClient({
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
                     type="button"
-                    onClick={() => setShowEventModal(false)}
+                    onClick={() => {
+                      setShowEventModal(false);
+                      setIsEditMode(false);
+                      setEditingEvent(null);
+                    }}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium"
                   >
                     Отмена
@@ -780,7 +881,7 @@ export default function ScheduleClient({
                     type="submit"
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
-                    Создать событие
+                    {isEditMode ? "Обновить событие" : "Создать событие"}
                   </button>
                 </div>
               </form>

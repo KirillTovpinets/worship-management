@@ -1,8 +1,9 @@
+import { TopBar } from "@/app/components/top-bar";
 import Providers from "@/components/Providers";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { TopBar } from "@/app/components/top-bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,12 @@ export default function RootLayout({
           <div className="min-h-screen bg-gray-50">
             <TopBar />
             <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-              <div className="px-4 py-6 sm:px-0">{children}</div>
+              <div className="px-4 py-6 sm:px-0">
+                <div className="flex items-center">
+                  <Breadcrumbs />
+                </div>
+                {children}
+              </div>
             </main>
           </div>
         </Providers>
