@@ -487,7 +487,12 @@ export default function ScheduleClient({
                             {event.songs.map((eventSong, index) => (
                               <span
                                 key={eventSong.id}
-                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200"
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/songs/${eventSong.songId}`,
+                                  )
+                                }
                               >
                                 {index + 1}. {eventSong.song.title}
                               </span>
