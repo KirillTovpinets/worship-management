@@ -41,13 +41,15 @@ export const SongsTable = ({
     router.push(`/dashboard/songs/${song.id}`);
   };
   const singersWithKeys = songs.reduce(
-    (acc: Set<{ id: string; name: string }>, song: Song) => {
+    (acc: Array<{ id: string; name: string }>, song: Song) => {
       song.adaptations?.forEach((adaptation) => {
-        acc.add({ id: adaptation.singerId, name: adaptation.singer.name });
+        if (!acc.some((singer) => singer.id === adaptation.singerId)) {
+          acc.push({ id: adaptation.singerId, name: adaptation.singer.name });
+        }
       });
       return acc;
     },
-    new Set(),
+    [],
   );
 
   let maxAdoptations = 0;
