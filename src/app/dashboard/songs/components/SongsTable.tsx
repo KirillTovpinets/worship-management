@@ -40,6 +40,16 @@ export const SongsTable = ({
   const handleRowClick = (song: Song) => {
     router.push(`/dashboard/songs/${song.id}`);
   };
+  const singersWithKeys = songs.reduce(
+    (acc: Set<{ id: string; name: string }>, song: Song) => {
+      song.adaptations?.forEach((adaptation) => {
+        acc.add({ id: adaptation.singerId, name: adaptation.singer.name });
+      });
+      return acc;
+    },
+    new Set(),
+  );
+
   let maxAdoptations = 0;
   let songWithMaxAdoptations: Song | null = null;
   for (const song of songs) {
@@ -62,8 +72,8 @@ export const SongsTable = ({
               Название
             </WSortableTh>
             {songWithMaxAdoptations &&
-              songWithMaxAdoptations.adaptations?.map((adaptation) => (
-                <WTh key={adaptation.id}>{adaptation.singer.name}</WTh>
+              Array.from(singersWithKeys).map((singer) => (
+                <WTh key={singer.id}>{singer.name}</WTh>
               ))}
             <WSortableTh sortKey="bpm" currentSort={sortConfig} onSort={onSort}>
               BPM
@@ -111,24 +121,22 @@ export const SongsTable = ({
                   {song.title}
                 </div>
               </WTd>
-              {songWithMaxAdoptations &&
-                songWithMaxAdoptations.adaptations &&
-                songWithMaxAdoptations.adaptations.length > 0 &&
-                songWithMaxAdoptations.adaptations.map((adaptation) => {
-                  const songAdoptation = song.adaptations?.find(
-                    (a, i) => a.singerId === adaptation.singerId,
+              {Array.from(singersWithKeys).length > 0 &&
+                Array.from(singersWithKeys).map((singer) => {
+                  const songAdaptation = song.adaptations?.find(
+                    (a, i) => a.singerId === singer.id,
                   );
-                  if (songAdoptation) {
+                  if (songAdaptation) {
                     return (
-                      <WTd key={`${song.id}-${songAdoptation.id}`}>
+                      <WTd key={`${song.id}-${singer.id}`}>
                         <WBadge variant="success" size="sm">
-                          {getKeyLabel(songAdoptation.key)}
+                          {getKeyLabel(songAdaptation.key)}
                         </WBadge>
                       </WTd>
                     );
                   } else {
                     return (
-                      <WTd key={`${song.id}-empty`}>
+                      <WTd key={`${song.id}-${singer.id}-empty`}>
                         <span className="text-gray-400 text-xs">Нет</span>
                       </WTd>
                     );

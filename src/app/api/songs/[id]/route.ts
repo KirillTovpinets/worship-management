@@ -70,6 +70,7 @@ export async function PUT(
       nature,
       lyrics,
       notes,
+      album,
     } = await request.json();
 
     // Check if song exists
@@ -94,7 +95,7 @@ export async function PUT(
     if (nature) updateData.nature = nature;
     if (lyrics !== undefined) updateData.lyrics = lyrics;
     if (notes !== undefined) updateData.notes = notes;
-
+    if (album) updateData.album = album;
     // Update song
     const updatedSong = await prisma.song.update({
       where: { id },

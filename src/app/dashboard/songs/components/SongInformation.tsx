@@ -45,6 +45,7 @@ export default function SongInformation({ song }: SongInformationProps) {
         <div className="px-6 py-4">
           <p>BPM: {song.bpm}</p>
           <p>Исполнитель: {song.originalSinger}</p>
+          <p>Альбом: {song.album}</p>
           <p>Автор: {song.author}</p>
           <p>Стиль: {song.style}</p>
           <p>
