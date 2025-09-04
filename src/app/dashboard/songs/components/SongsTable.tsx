@@ -74,7 +74,7 @@ export const SongsTable = ({
               Название
             </WSortableTh>
             {songWithMaxAdoptations &&
-              Array.from(singersWithKeys).map((singer) => (
+              singersWithKeys.map((singer) => (
                 <WTh key={singer.id}>{singer.name}</WTh>
               ))}
             <WSortableTh sortKey="bpm" currentSort={sortConfig} onSort={onSort}>
@@ -123,8 +123,8 @@ export const SongsTable = ({
                   {song.title}
                 </div>
               </WTd>
-              {Array.from(singersWithKeys).length > 0 &&
-                Array.from(singersWithKeys).map((singer) => {
+              {singersWithKeys.length > 0 &&
+                singersWithKeys.map((singer) => {
                   const songAdaptation = song.adaptations?.find(
                     (a, i) => a.singerId === singer.id,
                   );
