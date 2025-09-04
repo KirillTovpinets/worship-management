@@ -1,18 +1,6 @@
-import { SongKey } from "@prisma/client";
+import { Song as PrismaSong, SongKey } from "@prisma/client";
 
-export interface Song {
-  id: string;
-  title: string;
-  bpm: string;
-  originalSinger: string;
-  author: string;
-  style: string;
-  tags: string;
-  nature: string;
-  notes?: string;
-  lyrics?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Song extends PrismaSong {
   events?: Array<{
     id: string;
     eventId: string;
@@ -64,6 +52,7 @@ export interface FilterOptions {
   styles: string[];
   tags: string[];
   natures: string[];
+  albums: string[];
 }
 
 export interface CurrentFilters {
@@ -83,14 +72,4 @@ export interface SongsClientProps {
   currentFilters: CurrentFilters;
 }
 
-export interface SongFormData {
-  title: string;
-  bpm: string;
-  originalSinger: string;
-  author: string;
-  style: string;
-  tags: string;
-  nature: string;
-  lyrics: string;
-  notes: string;
-}
+export type SongFormData = Omit<Song, "id" | "createdAt" | "updatedAt">;

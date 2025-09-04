@@ -37,6 +37,7 @@ export default async function SongsView({
     : searchParams.natures
     ? [searchParams.natures]
     : [];
+
   const hasEvents = searchParams.hasEvents
     ? searchParams.hasEvents === "true"
     : undefined;
@@ -117,6 +118,9 @@ export default async function SongsView({
       case "author":
         orderBy = { author: sortOrder };
         break;
+      case "album":
+        orderBy = { album: sortOrder };
+        break;
       default:
         orderBy = { title: "asc" };
     }
@@ -162,13 +166,13 @@ export default async function SongsView({
   });
 
   const allSongs = await prisma.song.findMany({
-    select: { tags: true, nature: true },
+    select: { tags: true, nature: true, album: true },
   });
 
   // Extract unique tags and natures
   const allTags = new Set<string>();
   const allNatures = new Set<string>();
-
+  const allAlbums = new Set<string>();
   allSongs.forEach((song) => {
     if (song.tags) {
       song.tags.split("/").forEach((tag) => {
@@ -180,11 +184,16 @@ export default async function SongsView({
         allNatures.add(nature.trim());
       });
     }
+    if (song.album) {
+      song.album.split(",").forEach((album) => {
+        allAlbums.add(album.trim());
+      });
+    }
   });
 
   const uniqueTags = Array.from(allTags).sort();
   const uniqueNatures = Array.from(allNatures).sort();
-
+  const uniqueAlbums = Array.from(allAlbums).sort();
   const pagination = {
     page,
     limit,
@@ -198,6 +207,7 @@ export default async function SongsView({
     styles: uniqueStyles.map((s) => s.style),
     tags: uniqueTags,
     natures: uniqueNatures,
+    albums: uniqueAlbums,
   };
 
   // Cast songs to the expected type

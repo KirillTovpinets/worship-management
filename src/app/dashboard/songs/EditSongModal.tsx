@@ -21,6 +21,7 @@ export const EditSongModal = () => {
     nature: "",
     lyrics: "",
     notes: "",
+    album: "",
   });
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export const EditSongModal = () => {
         nature: editingSong.nature,
         lyrics: editingSong.lyrics || "",
         notes: editingSong.notes || "",
+        album: editingSong.album,
       });
     }
   }, [editingSong]);
@@ -171,7 +173,7 @@ export const EditSongModal = () => {
               </label>
               <WTextarea
                 placeholder="e.g., upbeat, reflective, powerful"
-                value={formData.notes}
+                value={formData.notes || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, notes: e.target.value })
                 }

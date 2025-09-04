@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
       tags: ["tags", "tag", "keywords"],
       nature: ["nature", "mood", "feeling"],
       lyrics: ["lyrics", "lyric", "text", "words"],
+      album: ["album", "album name", "collection", "collection name"],
     };
 
     // Map headers to expected columns
@@ -95,6 +96,7 @@ export async function POST(request: NextRequest) {
       "style",
       "tags",
       "nature",
+      "album",
     ];
     const missingColumns = requiredColumns.filter(
       (col) => columnMap[col] === undefined,
@@ -140,7 +142,7 @@ export async function POST(request: NextRequest) {
         const tags = row[columnMap.tags!]?.toString().trim();
         const nature = row[columnMap.nature!]?.toString().trim();
         const lyrics = row[columnMap.lyrics!]?.toString().trim();
-
+        const album = row[columnMap.album!]?.toString().trim();
         // Validate required fields
         if (!title) {
           results.errors.push(`Row ${rowNumber}: Title is required`);
@@ -177,6 +179,11 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
+        if (!album) {
+          results.errors.push(`Row ${rowNumber}: Album is required`);
+          continue;
+        }
+
         // Check if song already exists
         const existingSong = await prisma.song.findFirst({
           where: { title: title },
@@ -198,6 +205,7 @@ export async function POST(request: NextRequest) {
             tags,
             nature,
             lyrics: lyrics || null,
+            album,
           },
         });
 

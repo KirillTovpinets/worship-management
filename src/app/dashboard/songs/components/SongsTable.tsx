@@ -83,6 +83,13 @@ export const SongsTable = ({
             >
               Автор
             </WSortableTh>
+            <WSortableTh
+              sortKey="album"
+              currentSort={sortConfig}
+              onSort={onSort}
+            >
+              Альбом
+            </WSortableTh>
             <WTh>Стиль</WTh>
             <WTh>Теги</WTh>
             <WTh>Заметки</WTh>
@@ -107,9 +114,9 @@ export const SongsTable = ({
               {songWithMaxAdoptations &&
                 songWithMaxAdoptations.adaptations &&
                 songWithMaxAdoptations.adaptations.length > 0 &&
-                songWithMaxAdoptations.adaptations.map((adaptation, index) => {
+                songWithMaxAdoptations.adaptations.map((adaptation) => {
                   const songAdoptation = song.adaptations?.find(
-                    (a, i) => i === index,
+                    (a, i) => a.singerId === adaptation.singerId,
                   );
                   if (songAdoptation) {
                     return (
@@ -131,6 +138,7 @@ export const SongsTable = ({
               <WTd>{song.nature}</WTd>
               <WTd>{song.originalSinger}</WTd>
               <WTd>{song.author}</WTd>
+              <WTd>{song.album}</WTd>
               <WTd>{song.style}</WTd>
               <WTd>
                 <div className="flex gap-2 flex-wrap">

@@ -128,13 +128,13 @@ export async function GET(request: NextRequest) {
     });
 
     const allSongs = await prisma.song.findMany({
-      select: { tags: true, nature: true },
+      select: { tags: true, nature: true, album: true },
     });
 
     // Extract unique tags and natures
     const allTags = new Set<string>();
     const allNatures = new Set<string>();
-
+    const allAlbums = new Set<string>();
     allSongs.forEach((song) => {
       if (song.tags) {
         song.tags.split("/").forEach((tag) => {
@@ -146,11 +146,16 @@ export async function GET(request: NextRequest) {
           allNatures.add(nature.trim());
         });
       }
+      if (song.album) {
+        song.album.split(",").forEach((album) => {
+          allAlbums.add(album.trim());
+        });
+      }
     });
 
     const uniqueTags = Array.from(allTags).sort();
     const uniqueNatures = Array.from(allNatures).sort();
-
+    const uniqueAlbums = Array.from(allAlbums).sort();
     // Get unique matching singers from songs
     const uniqueMatchingSingers = await prisma.song.findMany({
       select: {
@@ -179,6 +184,7 @@ export async function GET(request: NextRequest) {
         matchingSingers: uniqueMatchingSingers.map((s) => ({
           name: s.originalSinger,
         })),
+        albums: uniqueAlbums,
       },
     });
   } catch (error) {
@@ -199,8 +205,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, bpm, originalSinger, author, style, tags, nature, lyrics } =
-      await request.json();
+    const {
+      title,
+      bpm,
+      originalSinger,
+      author,
+      style,
+      tags,
+      nature,
+      lyrics,
+      album,
+    } = await request.json();
 
     if (
       !title ||
@@ -209,7 +224,8 @@ export async function POST(request: NextRequest) {
       !author ||
       !style ||
       !tags ||
-      !nature
+      !nature ||
+      !album
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -228,6 +244,7 @@ export async function POST(request: NextRequest) {
         tags,
         nature,
         lyrics: lyrics || null,
+        album,
       },
     });
 

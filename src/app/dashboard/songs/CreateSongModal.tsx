@@ -15,6 +15,7 @@ export const CreateSongModal = () => {
     bpm: "",
     originalSinger: "",
     author: "",
+    album: "",
     style: "",
     tags: "",
     nature: "",
@@ -54,6 +55,20 @@ export const CreateSongModal = () => {
                 value={formData.title}
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
+                }
+                className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Альбом *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.album || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, album: e.target.value })
                 }
                 className="mt-1 block text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -172,7 +187,7 @@ export const CreateSongModal = () => {
                 </div>
                 <div>
                   <textarea
-                    value={formData.lyrics}
+                    value={formData.lyrics || ""}
                     onChange={(e) =>
                       setFormData({ ...formData, lyrics: e.target.value })
                     }

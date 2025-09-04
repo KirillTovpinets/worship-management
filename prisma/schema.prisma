@@ -63,6 +63,7 @@ model Song {
   bpm            String
   originalSinger String
   author         String
+  album          String?
   style          String
   tags           String
   nature         String

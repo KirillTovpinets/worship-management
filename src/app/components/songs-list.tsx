@@ -1,7 +1,7 @@
 "use client";
 
-import { Song } from "@/app/dashboard/songs/types";
 import Pagination from "@/components/Pagination";
+import { Song } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -12,6 +12,7 @@ interface FilterOptions {
   styles: string[];
   tags: string[];
   natures: string[];
+  albums: string[];
 }
 
 interface PaginationData {
@@ -23,16 +24,7 @@ interface PaginationData {
   hasPrevPage: boolean;
 }
 
-interface SongFormData {
-  title: string;
-  bpm: string;
-  originalSinger: string;
-  author: string;
-  style: string;
-  tags: string;
-  nature: string;
-  notes: string;
-}
+type SongFormData = Omit<Song, "id" | "createdAt" | "updatedAt">;
 
 export default function SongsList({
   currentFilters,
@@ -124,10 +116,12 @@ export default function SongsList({
       bpm: song.bpm,
       originalSinger: song.originalSinger,
       author: song.author,
+      album: song.album,
       style: song.style,
       tags: song.tags,
       nature: song.nature,
       notes: song.notes || "",
+      lyrics: song.lyrics || "",
     });
   };
 
@@ -136,6 +130,7 @@ export default function SongsList({
     bpm: "",
     originalSinger: "",
     author: "",
+    album: "",
     style: "",
     tags: "",
     nature: "",
