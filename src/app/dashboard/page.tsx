@@ -26,13 +26,7 @@ export default async function Dashboard() {
         role: "SINGER",
       },
     }),
-    prisma.song.count({
-      where: {
-        events: {
-          some: {},
-        },
-      },
-    }),
+    prisma.song.count(),
   ]);
 
   // Fetch recent data for activity feed
