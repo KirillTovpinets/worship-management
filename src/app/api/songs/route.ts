@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - List all songs with filtering, search, and pagination
@@ -247,6 +248,10 @@ export async function POST(request: NextRequest) {
         album,
       },
     });
+
+    // Revalidate dashboard and songs pages to update counts
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/songs");
 
     return NextResponse.json(
       {

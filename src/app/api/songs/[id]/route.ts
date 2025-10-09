@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - Get specific song
@@ -141,6 +142,10 @@ export async function DELETE(
     await prisma.song.delete({
       where: { id },
     });
+
+    // Revalidate dashboard and songs pages to update counts
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/songs");
 
     return NextResponse.json({
       message: "Song deleted successfully",

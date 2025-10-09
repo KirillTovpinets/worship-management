@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 
@@ -217,6 +218,12 @@ export async function POST(request: NextRequest) {
           }`,
         );
       }
+    }
+
+    // Revalidate dashboard and songs pages to update counts if any songs were imported
+    if (results.success > 0) {
+      revalidatePath("/dashboard");
+      revalidatePath("/dashboard/songs");
     }
 
     return NextResponse.json({

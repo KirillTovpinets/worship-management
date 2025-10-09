@@ -1,9 +1,9 @@
 "use client";
 
 import { Event, EventSong, Song } from "@prisma/client";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { CalendarIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ScheduleClientProps {
   events: (Event & {
@@ -25,9 +25,13 @@ export default function ScheduleClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showEventModal, setShowEventModal] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [tempYear, setTempYear] = useState(currentYear);
+  const [tempMonth, setTempMonth] = useState(currentMonth);
+  const datePickerRef = useRef<HTMLDivElement>(null);
   const [eventForm, setEventForm] = useState({
     title: "",
     description: "",
@@ -113,6 +117,26 @@ export default function ScheduleClient({
 
   const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
+  // Handle click outside to close date picker
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePicker(false);
+      }
+    };
+
+    if (showDatePicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDatePicker]);
+
   const navigateMonth = (direction: "prev" | "next") => {
     let newYear = currentYear;
     let newMonth = currentMonth;
@@ -137,6 +161,20 @@ export default function ScheduleClient({
     params.set("year", newYear.toString());
     params.set("month", newMonth.toString());
     router.push(`/dashboard/schedule?${params.toString()}`);
+  };
+
+  const openDatePicker = () => {
+    setTempYear(currentYear);
+    setTempMonth(currentMonth);
+    setShowDatePicker(true);
+  };
+
+  const handleDatePickerSubmit = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("year", tempYear.toString());
+    params.set("month", tempMonth.toString());
+    router.push(`/dashboard/schedule?${params.toString()}`);
+    setShowDatePicker(false);
   };
 
   const getEventsForDate = (date: Date) => {
@@ -292,9 +330,86 @@ export default function ScheduleClient({
                       />
                     </svg>
                   </button>
-                  <h1 className="text-2xl font-semibold text-gray-900">
-                    {monthNames[currentMonth - 1]} {currentYear}
-                  </h1>
+                  <div className="relative" ref={datePickerRef}>
+                    <button
+                      onClick={openDatePicker}
+                      className="flex items-center gap-2 text-2xl font-semibold text-gray-900 hover:text-indigo-600 transition-colors cursor-pointer group"
+                    >
+                      {monthNames[currentMonth - 1]} {currentYear}
+                      <CalendarIcon className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                    </button>
+
+                    {/* Date Picker Tooltip */}
+                    {showDatePicker && (
+                      <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 w-72">
+                        <h3 className="text-sm font-medium text-gray-900 mb-3">
+                          Выберите месяц и год
+                        </h3>
+                        <div className="space-y-3">
+                          {/* Year Selector */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Год
+                            </label>
+                            <select
+                              value={tempYear}
+                              onChange={(e) =>
+                                setTempYear(parseInt(e.target.value))
+                              }
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                            >
+                              {Array.from({ length: 10 }, (_, i) => {
+                                const year = new Date().getFullYear() - 5 + i;
+                                return (
+                                  <option key={year} value={year}>
+                                    {year}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
+
+                          {/* Month Selector */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Месяц
+                            </label>
+                            <select
+                              value={tempMonth}
+                              onChange={(e) =>
+                                setTempMonth(parseInt(e.target.value))
+                              }
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+                            >
+                              {monthNames.map((month, index) => (
+                                <option key={index + 1} value={index + 1}>
+                                  {month}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-2 mt-4">
+                          <button
+                            type="button"
+                            onClick={() => setShowDatePicker(false)}
+                            className="px-3 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors"
+                          >
+                            Отмена
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleDatePickerSubmit}
+                            className="px-3 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors"
+                          >
+                            Применить
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <button
                     onClick={() => navigateMonth("next")}
                     className="p-2 text-gray-400 hover:text-gray-600"
