@@ -90,12 +90,17 @@ export default function ScheduleClient({
   const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1);
   const lastDayOfMonth = new Date(currentYear, currentMonth, 0);
   const startDate = new Date(firstDayOfMonth);
-  startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay());
+
+  // Adjust to start on Monday (getDay: 0=Sunday, 1=Monday, etc.)
+  // If Sunday (0), go back 6 days; if Monday (1), go back 0 days, etc.
+  const dayOffset = (firstDayOfMonth.getDay() + 6) % 7;
+  startDate.setDate(startDate.getDate() - dayOffset);
 
   const calendarDays = [];
   const currentDate = new Date(startDate);
 
-  while (currentDate <= lastDayOfMonth || currentDate.getDay() !== 0) {
+  // Continue until we complete the week (end on Sunday, then stop on Monday)
+  while (currentDate <= lastDayOfMonth || currentDate.getDay() !== 1) {
     calendarDays.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
@@ -115,7 +120,7 @@ export default function ScheduleClient({
     "Декабрь",
   ];
 
-  const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+  const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
   // Handle click outside to close date picker
   useEffect(() => {
