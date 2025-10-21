@@ -1,6 +1,7 @@
 "use client";
 
 import { Event, EventSong, Song } from "@prisma/client";
+import { toZonedTime } from "date-fns-tz";
 import { CalendarIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +16,8 @@ interface ScheduleClientProps {
   currentYear: number;
   currentMonth: number;
 }
+
+const belarusTimezone = "Europe/Minsk";
 
 export default function ScheduleClient({
   events,
@@ -184,8 +187,11 @@ export default function ScheduleClient({
 
   const getEventsForDate = (date: Date) => {
     return events.filter((event) => {
-      const eventDate = new Date(event.date);
-      return eventDate.toDateString() === date.toDateString();
+      const eventDate = toZonedTime(new Date(event.date), belarusTimezone);
+      return (
+        eventDate.toDateString() ===
+        toZonedTime(date, belarusTimezone).toDateString()
+      );
     });
   };
 
@@ -242,7 +248,7 @@ export default function ScheduleClient({
         body: JSON.stringify({
           title: eventForm.title,
           description: eventForm.description,
-          date: selectedDate.toISOString(),
+          date: selectedDate,
           songIds: songOrder.map((song) => song.id),
         }),
       });

@@ -61,13 +61,12 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-
     // Create event
     const event = await prisma.event.create({
       data: {
         title,
         description: description || null,
-        date: new Date(date),
+        date,
       },
     });
 
