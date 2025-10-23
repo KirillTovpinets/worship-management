@@ -1,12 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import { fromZonedTime } from "date-fns-tz";
 import ScheduleClient from "./ScheduleClient";
-
 interface SchedulePageProps {
   searchParams: Promise<{
     year?: string;
     month?: string;
   }>;
 }
+
+const belarusTimezone = "Europe/Minsk";
 
 export default async function SchedulePage({
   searchParams: params,
@@ -26,11 +28,14 @@ export default async function SchedulePage({
   const startOfMonth = new Date(year, month - 1, 1);
   const endOfMonth = new Date(year, month, 0);
 
+  const startOfMonthUTC = fromZonedTime(startOfMonth, belarusTimezone);
+  const endOfMonthUTC = fromZonedTime(endOfMonth, belarusTimezone);
+
   const events = await prisma.event.findMany({
     where: {
       date: {
-        gte: startOfMonth,
-        lte: endOfMonth,
+        gte: startOfMonthUTC,
+        lte: endOfMonthUTC,
       },
     },
     include: {
