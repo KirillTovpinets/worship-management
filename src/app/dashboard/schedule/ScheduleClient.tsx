@@ -49,6 +49,7 @@ export default function ScheduleClient({
 
   // Filter states
   const [songFilters, setSongFilters] = useState({
+    title: "",
     tags: "",
     styles: "",
     nature: "",
@@ -77,6 +78,9 @@ export default function ScheduleClient({
 
   // Filter songs based on selected filters
   const filteredSongs = songs.filter((song) => {
+    const matchesTitle =
+      !songFilters.title ||
+      song.title.toLowerCase().includes(songFilters.title.toLowerCase());
     const matchesTags =
       !songFilters.tags ||
       song.tags.toLowerCase().includes(songFilters.tags.toLowerCase());
@@ -87,7 +91,7 @@ export default function ScheduleClient({
       !songFilters.nature ||
       song.nature.toLowerCase().includes(songFilters.nature.toLowerCase());
 
-    return matchesTags && matchesStyles && matchesNature;
+    return matchesTags && matchesStyles && matchesNature && matchesTitle;
   });
 
   // Generate calendar data
@@ -207,6 +211,7 @@ export default function ScheduleClient({
     });
     setSongOrder([]);
     setSongFilters({
+      title: "",
       tags: "",
       styles: "",
       nature: "",
@@ -229,6 +234,7 @@ export default function ScheduleClient({
       event.songs.map((es) => ({ id: es.songId, title: es.song.title })),
     );
     setSongFilters({
+      title: "",
       tags: "",
       styles: "",
       nature: "",
@@ -650,6 +656,22 @@ export default function ScheduleClient({
                       Выберите песни
                     </label>
 
+                    {/* Search by title input */}
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        placeholder="Поиск по названию песни..."
+                        value={songFilters.title || ""}
+                        onChange={(e) =>
+                          setSongFilters({
+                            ...songFilters,
+                            title: e.target.value,
+                          })
+                        }
+                        className="block w-full text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+
                     {/* Filter Controls */}
                     <div className="mb-4 space-y-3">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -724,7 +746,8 @@ export default function ScheduleClient({
                       </div>
 
                       {/* Clear Filters Button */}
-                      {(songFilters.tags ||
+                      {(songFilters.title ||
+                        songFilters.tags ||
                         songFilters.styles ||
                         songFilters.nature) && (
                         <div>
@@ -732,6 +755,7 @@ export default function ScheduleClient({
                             type="button"
                             onClick={() =>
                               setSongFilters({
+                                title: "",
                                 tags: "",
                                 styles: "",
                                 nature: "",
